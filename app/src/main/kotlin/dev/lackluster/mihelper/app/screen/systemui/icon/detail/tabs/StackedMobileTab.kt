@@ -39,6 +39,7 @@ private val visibilityOptions = listOf(
 private val signalIconStyle = listOf(
     DropDownOption(0, R.string.icon_detail_stacked_signal_style_miui),
     DropDownOption(1, R.string.icon_detail_stacked_signal_style_ios),
+    DropDownOption(3, R.string.icon_detail_stacked_signal_style_ios27),
     DropDownOption(2, R.string.icon_detail_stacked_signal_style_custom),
 )
 
@@ -139,6 +140,22 @@ fun LazyListScope.stackedMobileTabContent(
             title = stringResource(R.string.icon_detail_stacked_signal_alpha_error),
             min = 0.0f,
             max = 1.0f,
+        )
+        SeekBarPreference(
+            key = Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_SCALE,
+            title = stringResource(R.string.icon_detail_stacked_signal_scale),
+            min = 0.5f,
+            max = 1.5f,
+        )
+        EditTextPreference(
+            key = Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_PADDING_START,
+            title = stringResource(R.string.icon_detail_battery_padding_start),
+            isValueValid = { it >= 0.0f },
+        )
+        EditTextPreference(
+            key = Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_PADDING_END,
+            title = stringResource(R.string.icon_detail_battery_padding_end),
+            isValueValid = { it >= 0.0f },
         )
     }
     itemPreferenceGroup(

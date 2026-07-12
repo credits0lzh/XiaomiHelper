@@ -28,12 +28,14 @@ object Preferences {
         val HAZE_LIGHT_BLUR_ALPHA = PreferenceKey("app_haze_light_blur_alpha", 0.8f)
         val HAZE_DARK_BLUR_ALPHA = PreferenceKey("app_haze_dark_blur_alpha", 0.7f)
         val SKIP_ROOT_CHECK = PreferenceKey("app_ignore_root", false)
+        val SKIP_SYSTEM_VERSION_WARNING = PreferenceKey("app_ignore_system_version_warning", false)
         val HIDE_ICON = PreferenceKey("hide_icon", false)
     }
 
     object Browser {
         val AD_BLOCKER = PreferenceKey("browser_ad_block", false)
         val SKIP_SPLASH = PreferenceKey("browser_skip_splash", false)
+        val SYNC_USER_AGENT_METADATA = PreferenceKey("browser_sync_user_agent_metadata", false)
         val SHOW_SUG_SWITCH_ENTRY = PreferenceKey("browser_show_sug_switch_view", false)
         val HIDE_HOMEPAGE_TOP_BAR = PreferenceKey("browser_hide_home_top_bar", false)
         val BLOCK_DIALOG = PreferenceKey("browser_block_dialog", false)
@@ -159,7 +161,8 @@ object Preferences {
         val MODULE_ENABLED = PreferenceKey("enable_module", true)
         val DEBUG = PreferenceKey("enable_debug", BuildConfig.DEBUG)
         val DEX_KIT_CACHE = PreferenceKey("dexkit_cache", true)
-        val SHOW_IN_SETTINGS = PreferenceKey("entry_in_settings", false)
+        @Deprecated("Use SETTINGS_ENTRY_POSITION instead") val SHOW_IN_SETTINGS = PreferenceKey("entry_in_settings", false)
+        val SETTINGS_ENTRY_POSITION = PreferenceKey("entry_position", 0)
         val SETTINGS_ICON_STYLE = PreferenceKey("entry_icon_style", 0)
         val SETTINGS_ICON_COLOR = PreferenceKey("entry_icon_color", 0)
         val SETTINGS_NAME = PreferenceKey("entry_name", 0)
@@ -170,9 +173,9 @@ object Preferences {
     object Music {
         val AD_BLOCKER = PreferenceKey("music_ad_block", false)
         val SKIP_SPLASH = PreferenceKey("music_skip_splash", false)
-        val HIDE_KARAOKE = PreferenceKey("music_hide_karaoke", false)
-        val HIDE_LONG_AUDIO = PreferenceKey("music_hide_long_audio", false)
-        val HIDE_DISCOVER = PreferenceKey("music_hide_discover", false)
+        val HIDE_TAB_LONG_AUDIO = PreferenceKey("music_hide_tab_long_audio", false)
+        val HIDE_TAB_QUICK_PLAY = PreferenceKey("music_hide_tab_quick_play", false)
+        val HIDE_TAB_FREE_MODE = PreferenceKey("music_hide_tab_free_mode", false)
         val HIDE_MY_BANNER = PreferenceKey("music_my_hide_banner", false)
         val HIDE_MY_REC_PLAYLIST = PreferenceKey("music_my_hide_rec", false)
         val HIDE_FAV_NUM = PreferenceKey("music_hide_fav_num", false)
@@ -275,6 +278,8 @@ object Preferences {
             val LR_OPT_HIDE_SECTION_HEADER = PreferenceKey("systemui_notif_lr_opt_hide_header", false)
             val LR_OPT_HIDE_SECTION_GAP = PreferenceKey("systemui_notif_lr_opt_hide_gap", false)
             val LR_OPT_RERANK = PreferenceKey("systemui_notif_lr_rerank", false)
+            val LR_OPT_PINNED_APPS_ENABLED = PreferenceKey("systemui_notif_lr_opt_pinned_apps_enabled", false)
+            val LR_OPT_PINNED_APPS_ORDER = PreferenceKey("systemui_notif_lr_opt_pinned_apps_order", emptySet<String>())
             val ENABLE_MONET_OVERLAY = PreferenceKey("systemui_notif_monet_overlay", false)
             val MONET_OVERLAY_COLOR = PreferenceKey("systemui_notif_monet_color", "#3482FF")
         }
@@ -342,6 +347,8 @@ object Preferences {
                 val PADDING_END_VAL = PreferenceKey("statusbar_clock_padding_end_val", 0.0f)
                 val ENABLE_GEEK_MODE = PreferenceKey("statusbar_clock_geek", false)
                 val FIXED_WIDTH = PreferenceKey("statusbar_clock_fixed_width", false)
+                val CUSTOM_STATUS_BAR_CLOCK_SIZE = PreferenceKey("statusbar_clock_size", false)
+                val STATUS_BAR_CLOCK_SIZE_VAL = PreferenceKey("statusbar_clock_size_val", 14.0f)
                 val GEEK_FORMAT_CLOCK = PreferenceKey("statusbar_clock_pattern_clock", "H:mm")
                 val GEEK_FORMAT_PAD_CLOCK = PreferenceKey("statusbar_clock_pattern_pad_clock", "M d E")
                 val GEEK_FORMAT_BIG_TIME = PreferenceKey("statusbar_clock_pattern_big_time", "H:mm")
@@ -470,6 +477,9 @@ object Preferences {
                 val SIGNAL_ALPHA_FG = PreferenceKey("icon_tuner_stacked_icon_alpha_fg", 1.0f)
                 val SIGNAL_ALPHA_BG = PreferenceKey("icon_tuner_stacked_icon_alpha_bg", 0.4f)
                 val SIGNAL_ALPHA_ERROR = PreferenceKey("icon_tuner_stacked_icon_alpha_error", 0.2f)
+                val SIGNAL_SCALE = PreferenceKey("icon_tuner_stacked_icon_scale", 1.0f)
+                val SIGNAL_PADDING_START = PreferenceKey("icon_tuner_stacked_icon_padding_start", 0.0f)
+                val SIGNAL_PADDING_END = PreferenceKey("icon_tuner_stacked_icon_padding_end", 0.0f)
 
                 val TYPE_FONT_MODE = PreferenceKey("sb_font_stacked_type_font", 0)
                 val FONT_PATH_DISPLAY = PreferenceKey("sb_font_stacked_type_path_app", Constants.VARIABLE_FONT_DEFAULT_PATH)
@@ -611,5 +621,7 @@ object Preferences {
     object Updater {
         val BLOCK_AUTO_UPDATE_DIALOG = PreferenceKey("updater_block_dialog", false)
         val DISABLE_VALIDATION = PreferenceKey("updater_no_validation", false)
+        val ENABLE_SOTA_UPDATE_FILTER = PreferenceKey("updater_sota_pkg_filter", false)
+        val SOTA_UPDATE_FILTER_PACKAGES = PreferenceKey("updater_sota_pkg_filter_list", "com.miui.gallery, com.miui.weather2")
     }
 }

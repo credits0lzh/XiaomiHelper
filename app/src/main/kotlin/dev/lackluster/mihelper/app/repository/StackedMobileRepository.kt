@@ -53,6 +53,9 @@ private val relevantKeys: Set<PreferenceKey<*>> = setOf(
     Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_ALPHA_FG,
     Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_ALPHA_BG,
     Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_ALPHA_ERROR,
+    Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_SCALE,
+    Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_PADDING_START,
+    Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_PADDING_END,
 
     Preferences.SystemUI.StatusBar.StackedMobile.TYPE_FONT_MODE,
     Preferences.SystemUI.StatusBar.StackedMobile.FONT_PATH_DISPLAY,
@@ -183,6 +186,9 @@ class StackedMobileRepository(
                 alphaFg = prefRepo.get(Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_ALPHA_FG),
                 alphaBg = prefRepo.get(Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_ALPHA_BG),
                 alphaError = prefRepo.get(Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_ALPHA_ERROR),
+                scale = prefRepo.get(Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_SCALE).coerceIn(0.5f, 1.5f),
+                paddingStart = prefRepo.get(Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_PADDING_START).coerceAtLeast(0f),
+                paddingEnd = prefRepo.get(Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_PADDING_END).coerceAtLeast(0f),
             ),
             font = TypefaceState(
                 mode = parseFontMode(prefRepo.get(Preferences.SystemUI.StatusBar.StackedMobile.TYPE_FONT_MODE)),
@@ -242,19 +248,21 @@ class StackedMobileRepository(
     }
 
     private fun resolveSingleSvg(style: Int, customSvg: String): String {
-        val resolvedStyle = if (style !in 0..1 && customSvg.isBlank()) 0 else style
+        val resolvedStyle = if ((style == 2 && customSvg.isBlank()) || style !in 0..3) 0 else style
         return when (resolvedStyle) {
             0 -> getSvgFromAssets(Constants.ASSETS_SVG_SIGNAL_HYPER_OS_SINGLE)
             1 -> getSvgFromAssets(Constants.ASSETS_SVG_SIGNAL_IOS_SINGLE)
+            3 -> getSvgFromAssets(Constants.ASSETS_SVG_SIGNAL_IOS27_SINGLE)
             else -> customSvg // style == 2 时使用自定义的 SVG (从 RemoteFile 读出来的那个)
         }
     }
 
     private fun resolveStackedSvg(style: Int, customSvg: String): String {
-        val resolvedStyle = if (style !in 0..1 && customSvg.isBlank()) 0 else style
+        val resolvedStyle = if ((style == 2 && customSvg.isBlank()) || style !in 0..3) 0 else style
         return when (resolvedStyle) {
             0 -> getSvgFromAssets(Constants.ASSETS_SVG_SIGNAL_HYPER_OS_STACKED)
             1 -> getSvgFromAssets(Constants.ASSETS_SVG_SIGNAL_IOS_STACKED)
+            3 -> getSvgFromAssets(Constants.ASSETS_SVG_SIGNAL_IOS27_STACKED)
             else -> customSvg
         }
     }

@@ -11,6 +11,7 @@
     <string name="module_hide_icon">隐藏桌面图标</string>
     <string name="scope_taplus">传送门</string>
     <string name="main_app_root_tips">缺少 root 权限会导致某些功能无法正常运行</string>
+    <string name="main_system_version_tips">当前系统版本低于 Android 16 或 HyperOS 3.0.300，大部分功能可能无法正常生效</string>
     <string name="ui_title_menu_reboot">重启</string>
     <string name="menu_reboot_system">重启系统</string>
     <string name="menu_reboot_scope">重启全部作用域</string>
@@ -35,6 +36,8 @@
     <string name="cleaner_browser_debug_mode">Debug 模式</string>
     <string name="cleaner_browser_debug_mode_tips">强制启用 Debug 模式，仅适用于旧版本的浏览器</string>
     <string name="cleaner_browser_disable_update">禁用更新检查</string>
+    <string name="cleaner_browser_sync_user_agent_metadata">同步 User-Agent 数据</string>
+    <string name="cleaner_browser_sync_user_agent_metadata_tips">在切换手机版和桌面版 User-Agent 时，同步更新 User-Agent Client Hints 与 navigator.userAgentData</string>
     <string name="scope_weather">天气</string>
     <string name="action_recents">最近任务</string>
     <string name="action_xiaoai">超级小爱</string>
@@ -267,6 +270,7 @@
     <string name="about_donate">捐赠</string>
     <string name="about_donate_tips">请我喝杯咖啡</string>
     <string name="button_ignore">忽略</string>
+    <string name="button_do_not_remind">不再提示</string>
     <string name="dialog_done">完成</string>
     <string name="page_cleaner">净化</string>
     <string name="page_status_bar_icon_detail">图标定制</string>
@@ -280,6 +284,7 @@
     <string name="module_skip_root_check_tips">重启应用后生效</string>
     <string name="module_debug_tips">启用后将打印调试日志。立即生效。请仅在需要时启用！</string>
     <string name="module_show_in_settings">在设置中显示入口</string>
+    <string name="module_settings_entry_position_before_wifi">显示在“WLAN”之前</string>
     <string name="module_settings_icon_style">设置入口图标风格</string>
     <string name="module_settings_icon_style_android">安卓</string>
     <string name="module_settings_icon_color">设置入口图标颜色</string>
@@ -319,6 +324,8 @@
     <string name="security_power_block_battery_whitelist">阻止恢复电池优化白名单</string>
     <string name="cleaner_milink_fuck_hpplay">阻止创建乐播投屏相关文件</string>
     <string name="clock_general_geek">极客模式</string>
+    <string name="clock_general_custom_text_size">自定义状态栏时间字号</string>
+    <string name="clock_general_text_size_val">状态栏时间字号</string>
     <string name="ui_title_clock_geek_mode">极客模式</string>
     <string name="clock_geek_time_format_pattern_clock">状态栏时间格式</string>
     <string name="clock_geek_time_format_pattern_pad_clock">状态栏日期格式</string>
@@ -371,10 +378,7 @@
     <string name="cleaner_market_tab_game">游戏</string>
     <string name="cleaner_market_tab_rank">榜单</string>
     <string name="cleaner_market_tab_app_assemble">应用号</string>
-    <string name="cleaner_music_hide_karaoke_tips">从首页的顶部应用栏中移除K歌选项</string>
-    <string name="cleaner_music_hide_long_audio">隐藏有声</string>
-    <string name="cleaner_music_hide_long_audio_tips">从首页的顶部应用栏中移除有声选项</string>
-    <string name="cleaner_music_hide_discover_tips">从首页的顶部应用栏中移除发现选项</string>
+    <string name="cleaner_music_hide_tab_free_mode_tips">隐藏底栏的赚钱入口</string>
     <string name="cleaner_music_hide_my_banner">隐藏“我的”页的顶部横幅</string>
     <string name="cleaner_music_hide_my_rec_playlist">隐藏“我的”页的底部歌曲推荐</string>
     <string name="module_dexkit_cache">缓存 DexKit 结果</string>
@@ -444,8 +448,6 @@
     <string name="menu_reboot_common_title">重启%s</string>
     <string name="about_telegram">Telegram 频道</string>
     <string name="about_telegram_tips">加入 Telegram 频道以反馈问题并获取内部更新</string>
-    <string name="cleaner_music_hide_karaoke">隐藏K歌</string>
-    <string name="cleaner_music_hide_discover">隐藏发现</string>
     <string name="cleaner_browser_show_sug_switch_tips">显示搜素设置中被隐藏的搜索精选开关，关闭后即可禁用搜索页面的应用、视频、小说等额外推荐</string>
     <string name="cleaner_browser_hide_homepage_topbar">隐藏主页顶栏</string>
     <string name="cleaner_browser_hide_homepage_topbar_tips">隐藏简洁版主页的顶栏（包含探索版主页入口和主页设置按钮）</string>
@@ -545,6 +547,19 @@
     <string name="systemui_notif_lr_hide_section_header">隐藏节标题</string>
     <string name="systemui_notif_lr_opt">优化布局和排序</string>
     <string name="systemui_notif_lr_rerank">重新排序通知</string>
+    <string name="systemui_notif_lr_pinned_apps">置顶应用通知</string>
+    <string name="systemui_notif_lr_pinned_apps_tips">按优先级置顶所选应用的普通通知；对话通知仍优先。</string>
+    <string name="systemui_notif_lr_pinned_apps_hint">数值越小越靠前，0 为最高优先级；相同优先级的应用仍按系统原有规则排序。仅影响普通通知，对话通知仍优先。</string>
+    <string name="systemui_notif_lr_pinned_apps_enable">启用置顶应用通知</string>
+    <string name="systemui_notif_lr_pinned_apps_add">添加应用</string>
+    <string name="systemui_notif_lr_pinned_apps_list">已添加的应用</string>
+    <string name="systemui_notif_lr_pinned_apps_rule">应用规则</string>
+    <string name="systemui_notif_lr_pinned_apps_rule_hint">输入包名和非负优先级。数值越小越优先，多个应用可使用相同数值。</string>
+    <string name="systemui_notif_lr_pinned_apps_priority">优先级</string>
+    <string name="systemui_notif_lr_pinned_apps_invalid_pkg">包名不能为空</string>
+    <string name="systemui_notif_lr_pinned_apps_invalid_index">优先级必须为非负整数</string>
+    <string name="systemui_notif_lr_pinned_apps_pkg_exists">应用 %s 的配置已存在</string>
+    <string name="systemui_notif_lr_pinned_apps_delete_warning">确定要删除 %s 吗？</string>
     <string name="icon_tuner_position_demo_wifi">WLAN（演示模式）</string>
     <string name="icon_tuner_left_extra_blocked_slots_msg">部分模块会添加额外自定义状态图标，启用“状态图标左移”时这些额外的状态图标可能同时出现在状态栏两侧。\n\n在此输入这些图标的插槽名以阻止它们出现在左侧。如需输入多个，可以用逗号“,”分隔，比如“zen,volume”。</string>
     <string name="ui_title_icon_detail_cellular">移动网络</string>
@@ -655,6 +670,7 @@
     <string name="icon_detail_stacked_signal_alpha_fg">填充不透明度</string>
     <string name="icon_detail_stacked_signal_alpha_bg">背景不透明度</string>
     <string name="icon_detail_stacked_signal_alpha_error">无服务不透明度</string>
+    <string name="icon_detail_stacked_signal_scale">缩放</string>
     <string name="ui_title_icon_detail_stacked_visibility">图标可见性</string>
     <string name="ui_title_icon_detail_stacked_signal">信号图标</string>
     <string name="icon_detail_stacked_signal_style_single">单卡信号图标风格</string>
@@ -719,4 +735,14 @@
     <string name="others_intent_resolver_rerank_toast_pkg_exist">应用 %s 的配置已存在</string>
     <string name="others_intent_resolver_rerank_toast_index_exist">索引 %1$d 已被应用 %2$s 占用</string>
     <string name="others_intent_resolver_share_style">分享面板风格</string>
+    <string name="others_updater_sota_filter">SOTA 过滤</string>
+    <string name="others_updater_sota_filter_tips">阻止系统通过软件 OTA 自动更新指定应用</string>
+    <string name="others_updater_sota_filter_pkgs">被保护的应用</string>
+    <string name="others_updater_sota_filter_pkgs_tips">输入应用包名，多个包名请使用逗号“,”分隔</string>
+    <string name="cleaner_music_hide_tab_quick_play_tips">隐藏底栏的免费听入口</string>
+    <string name="cleaner_music_hide_tab_free_mode">隐藏赚钱</string>
+    <string name="cleaner_music_hide_tab_long_audio_tips">隐藏底栏的听书入口</string>
+    <string name="cleaner_music_hide_tab_quick_play">隐藏免费听</string>
+    <string name="cleaner_music_hide_tab_long_audio">隐藏听书</string>
+    <string name="module_settings_entry_position_after_device">显示在“我的设备”之后</string>
 </resources>

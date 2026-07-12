@@ -20,6 +20,8 @@
 
 package dev.lackluster.mihelper.hook.rules.systemui.notif
 
+import android.annotation.SuppressLint
+import android.app.Notification
 import android.service.notification.StatusBarNotification
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
@@ -28,7 +30,9 @@ import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
 import dev.lackluster.mihelper.hook.utils.extraOf
 import dev.lackluster.mihelper.hook.utils.toTyped
+import com.highcapable.kavaref.extension.classOf
 
+@SuppressLint("ReplaceWithKavaRefExtension")
 object LayoutAndRankOpt : StaticHooker() {
     private var Any.priority by extraOf("KEY_PRIORITY", 0)
     private var Any.peopleType by extraOf("KEY_PEOPLE_TYPE", 0)
@@ -39,6 +43,20 @@ object LayoutAndRankOpt : StaticHooker() {
     private val hideSectionHeader by Preferences.SystemUI.NotifCenter.LR_OPT_HIDE_SECTION_HEADER.lazyGet()
     private val hideSectionGap by Preferences.SystemUI.NotifCenter.LR_OPT_HIDE_SECTION_GAP.lazyGet()
     private val rerank by Preferences.SystemUI.NotifCenter.LR_OPT_RERANK.lazyGet()
+    private val pinnedAppsEnabled by Preferences.SystemUI.NotifCenter.LR_OPT_PINNED_APPS_ENABLED.lazyGet()
+    private val pinnedAppsOrder by Preferences.SystemUI.NotifCenter.LR_OPT_PINNED_APPS_ORDER.lazyGet()
+    private val pinnedAppPriorities by lazy {
+        buildMap {
+            pinnedAppsOrder.forEach { rule ->
+                val parts = rule.split(":", limit = 2)
+                val pkg = parts.getOrNull(0)?.takeIf { it.isNotBlank() }
+                val index = parts.getOrNull(1)?.toIntOrNull()?.takeIf { it >= 0 }
+                if (pkg != null && index != null) {
+                    put(pkg, index)
+                }
+            }
+        }
+    }
 
     private val clzPipelineEntry by "com.android.systemui.statusbar.notification.collection.PipelineEntry".lazyClassOrNull()
     private val metGetPeopleType by lazy {
@@ -69,6 +87,12 @@ object LayoutAndRankOpt : StaticHooker() {
             ?.resolve()?.firstFieldOrNull {
                 name = "mIsSystemApp"
             }?.toTyped<Boolean>()
+    }
+    private val isStyle by lazy {
+        classOf<Notification>().resolve().firstMethod {
+            name = "isStyle"
+            parameters(Class::class.java)
+        }.toTyped<Boolean>()
     }
 
     override fun onInit() {
@@ -167,7 +191,9 @@ object LayoutAndRankOpt : StaticHooker() {
                     val isFocusNotification1 = isFocusNotification(notification1)
                     val isFocusNotification2 = isFocusNotification(notification2)
                     val priorityMessage1 = priorityMessage(getArg(0))
-                    val priorityMessage2 = priorityMessage(getArg(0))
+                    val priorityMessage2 = priorityMessage(getArg(1))
+                    val pinnedAppPriority1 = if (priorityMessage1 == 0) pinnedAppPriority(notification1) else Int.MAX_VALUE
+                    val pinnedAppPriority2 = if (priorityMessage2 == 0) pinnedAppPriority(notification2) else Int.MAX_VALUE
                     result(
                         if (tail1 != tail2) {
                             if (tail2 == true) -1 else 1
@@ -177,6 +203,8 @@ object LayoutAndRankOpt : StaticHooker() {
                             if (isFocusNotification1) -1 else 1
                         } else if (priorityMessage1 != priorityMessage2) {
                             if (priorityMessage1 > priorityMessage2) -1 else 1
+                        } else if (pinnedAppPriority1 != pinnedAppPriority2) {
+                            if (pinnedAppPriority1 < pinnedAppPriority2) -1 else 1
                         } else {
                             0
                         }
@@ -195,19 +223,23 @@ object LayoutAndRankOpt : StaticHooker() {
         return notification != null && mIsFocusNotification?.get(notification) == true
     }
 
+    private fun isMessagingStyle(pipelineEntry: Any?): Boolean {
+        val notification = pipelineEntry?.let {
+            getRepresentativeEntry?.invoke(it)
+        }?.let {
+            mSbn?.get(it)?.notification
+        } ?: return false
+        return isStyle.invoke(notification, classOf<Notification.MessagingStyle>()) == true
+    }
+
     private fun priorityMessage(pipelineEntry: Any?): Int {
-        val priority =
-            if (pipelineEntry == null) {
-                0
-            } else {
-                pipelineEntry.priority ?: 0
-            }
-        val peopleType =
-            if (pipelineEntry == null) {
-                0
-            } else {
-                pipelineEntry.peopleType ?: 0
-            }
-        return priority * 10000 + peopleType
+        val conversationRank = (pipelineEntry?.priority ?: 0) * 10000 + (pipelineEntry?.peopleType ?: 0)
+        val messagingStyleRank = if (isMessagingStyle(pipelineEntry)) 10000 else 0
+        return maxOf(conversationRank, messagingStyleRank)
+    }
+
+    private fun pinnedAppPriority(notification: Any?): Int {
+        if (!pinnedAppsEnabled || notification !is StatusBarNotification) return Int.MAX_VALUE
+        return pinnedAppPriorities[notification.packageName] ?: Int.MAX_VALUE
     }
 }

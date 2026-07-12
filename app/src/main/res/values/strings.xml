@@ -20,6 +20,7 @@
     <string name="button_enable">Enable</string>
     <string name="button_disable">Disable</string>
     <string name="button_ignore">Ignore</string>
+    <string name="button_do_not_remind">Don\'t remind me again</string>
     <string name="dialog_done">Done</string>
     <string name="dialog_warning">Warning</string>
     <string name="dialog_error">Error</string>
@@ -100,6 +101,7 @@
     <string name="main_module_inactive_tips">The module isn\'t enabled. Please check the LSPosed version and module activation information and try again.</string>
     <string name="main_module_disabled_tips">The module isn\'t enabled. Please enable the module in the Module settings page.</string>
     <string name="main_app_root_tips">Lack of root privileges can prevent some features from working properly.</string>
+    <string name="main_system_version_tips">Your system version is below Android 16 or HyperOS 3.0.300. Most features may not work properly.</string>
     <!-- MenuPage -->
     <string name="ui_title_menu_reboot">Reboot</string>
     <string name="menu_reboot_system">Reboot system</string>
@@ -146,6 +148,9 @@
     <string name="module_debug">Debug mode</string>
     <string name="module_debug_tips">When enabled, debug logs will be printed. Takes effect immediately. Please enable only when needed!</string>
     <string name="module_show_in_settings">Icon in Settings</string>
+    <string name="module_settings_entry_position_disabled" translatable="false">@string/common_disabled</string>
+    <string name="module_settings_entry_position_after_device">Show after \"My device\"</string>
+    <string name="module_settings_entry_position_before_wifi">Show before \"WLAN\"</string>
     <string name="module_settings_icon_style">Icon style in Settings</string>
     <string name="module_settings_icon_style_default" translatable="false">@string/common_default</string>
     <string name="module_settings_icon_style_android">Android</string>
@@ -240,6 +245,19 @@
     <string name="systemui_notif_lr_hide_section_gap_tips">The spacing between the media control panel and the next notification differs from the spacing between other notifications because the media panel and other notifications belong to separate sections, and the system adds extra section spacing.</string>
     <string name="systemui_notif_lr_rerank">Re-rank notifications</string>
     <string name="systemui_notif_lr_rerank_tips">Re-rank notifications and reorder them in the following sequence: media control panel, system alerts, Spotlight notifications, MessageStyle notifications, and other notifications.</string>
+    <string name="systemui_notif_lr_pinned_apps">Pin app notifications</string>
+    <string name="systemui_notif_lr_pinned_apps_tips">Prioritize regular notifications from selected apps. Conversation and MessagingStyle notifications still take priority.</string>
+    <string name="systemui_notif_lr_pinned_apps_hint">A smaller priority value appears first; 0 is the highest. Apps with the same priority retain the system’s normal order. Only regular notifications are affected—Conversation and MessagingStyle notifications remain prioritized.</string>
+    <string name="systemui_notif_lr_pinned_apps_enable">Enable pinned app notifications</string>
+    <string name="systemui_notif_lr_pinned_apps_add">Add app</string>
+    <string name="systemui_notif_lr_pinned_apps_list">Added apps</string>
+    <string name="systemui_notif_lr_pinned_apps_rule">App rule</string>
+    <string name="systemui_notif_lr_pinned_apps_rule_hint">Enter a package name and a non-negative priority. Lower values are prioritized, and multiple apps may use the same value.</string>
+    <string name="systemui_notif_lr_pinned_apps_priority">Priority</string>
+    <string name="systemui_notif_lr_pinned_apps_invalid_pkg">Package name cannot be empty</string>
+    <string name="systemui_notif_lr_pinned_apps_invalid_index">Priority must be a non-negative integer</string>
+    <string name="systemui_notif_lr_pinned_apps_pkg_exists">Configuration for app %s already exists</string>
+    <string name="systemui_notif_lr_pinned_apps_delete_warning">Are you sure you want to delete %s?</string>
     <string name="systemui_notif_miuix_expand_btn">Miuix style expand button</string>
     <string name="systemui_notif_miuix_expand_btn_tips">Replace the expand button of Android-style notifications with Miuix button</string>
     <string name="ui_title_systemui_dynamic_island">Dynamic Island</string>
@@ -318,6 +336,8 @@
     <string name="cleaner_browser_switch_env">Switch internal address</string>
     <string name="cleaner_browser_switch_env_tips">Use the pre-release environment. It may be possible to remove some of the ads. It may not be possible to use settings such as customized search engine, so please finish setting before turning it on!</string>
     <string name="cleaner_browser_disable_update">Disable update check</string>
+    <string name="cleaner_browser_sync_user_agent_metadata">Sync User-Agent data</string>
+    <string name="cleaner_browser_sync_user_agent_metadata_tips">Keeps User-Agent Client Hints and navigator.userAgentData in sync when switching between mobile and desktop User-Agent modes.</string>
     <string name="ui_title_cleaner_download" translatable="false">@string/scope_download</string>
     <string name="cleaner_downloadui_hide_xl">Hide Xunlei icons and text</string>
     <string name="cleaner_download_fuck_xl">Block creation of .xlDownload folder</string>
@@ -353,12 +373,12 @@
     <string name="cleaner_milink_fuck_hpplay">Block creation of hpplay folders</string>
     <string name="ui_title_cleaner_mms" translatable="false">@string/scope_mms</string>
     <string name="ui_title_cleaner_music" translatable="false">@string/scope_music</string>
-    <string name="cleaner_music_hide_karaoke">Hide karaoke</string>
-    <string name="cleaner_music_hide_karaoke_tips">Remove the karaoke from the top tab on the home page</string>
-    <string name="cleaner_music_hide_long_audio">Hide long audio</string>
-    <string name="cleaner_music_hide_long_audio_tips">Remove the long audio from the top tab on the home page</string>
-    <string name="cleaner_music_hide_discover">Hide discover</string>
-    <string name="cleaner_music_hide_discover_tips">Remove the discover from the top tab on the home page</string>
+    <string name="cleaner_music_hide_tab_long_audio">Hide audiobook</string>
+    <string name="cleaner_music_hide_tab_long_audio_tips">Hide the Audiobook entry in the bottom bar</string>
+    <string name="cleaner_music_hide_tab_quick_play">Hide free listening</string>
+    <string name="cleaner_music_hide_tab_quick_play_tips">Hide the Free listening entry in the bottom bar</string>
+    <string name="cleaner_music_hide_tab_free_mode">Hide earn</string>
+    <string name="cleaner_music_hide_tab_free_mode_tips">Hide the Earn entry in the bottom bar</string>
     <string name="cleaner_music_hide_my_banner">Hide the banner on my page</string>
     <string name="cleaner_music_hide_my_rec_playlist">Hide recommended songs on my page</string>
     <string name="cleaner_music_hide_fav_num">Hide song favorite count</string>
@@ -526,6 +546,10 @@
     <string name="others_updater_block_dialog">Block \"Install automatically?\" popup</string>
     <string name="others_updater_disable_validation">Remove OTA validation</string>
     <string name="others_updater_disable_validation_tips">Only VAB devices are supported, don\'t turn it on for non-VAB devices!</string>
+    <string name="others_updater_sota_filter">Software OTA Filtering</string>
+    <string name="others_updater_sota_filter_tips">Prevent the system from updating specified apps through Software OTA</string>
+    <string name="others_updater_sota_filter_pkgs">Protected apps</string>
+    <string name="others_updater_sota_filter_pkgs_tips">Enter the package names. For multiple apps, separate them with commas ","</string>
     <string name="weather_card_color_default" translatable="false">@string/common_default</string>
     <string name="weather_card_color_light">Force light</string>
     <string name="weather_card_color_dark">Force dark</string>
@@ -537,6 +561,8 @@
     <string name="clock_general_geek">Geek mode</string>
     <string name="clock_easy_fixed_width">Fixed TextView width</string>
     <string name="clock_easy_fixed_width_tips">Fixed the width of TextView so that the notification icons don\'t keep changing position when the clock displays seconds.</string>
+    <string name="clock_general_custom_text_size">Customize font size (status bar clock)</string>
+    <string name="clock_general_text_size_val">Font size (status bar clock)</string>
     <string name="ui_title_clock_geek_mode">Geek mode</string>
     <string name="clock_geek_time_format_pattern_clock">Time format pattern (status bar)</string>
     <string name="clock_geek_time_format_pattern_pad_clock">Date format pattern (status bar)</string>
@@ -709,12 +735,14 @@
     <string name="icon_detail_stacked_signal_style_stacked_msg">Paste SVG code containing the eight IDs \nsignal_1_1, signal_1_2, signal_1_3, signal_1_4, \nsignal_2_1, signal_2_2, signal_2_3, and signal_2_4. \n\nHere, signal_1_2 represents the second signal bar of SIM 1. When SIM 1 has 2 bars and SIM 2 has 1 bar, signal_1_1, signal_1_2, and signal_2_1 will be filled using Fill opacity, while signal_1_3, signal_1_4, signal_2_2, signal_2_3, and signal_2_4 will be filled using Background opacity.</string>
     <string name="icon_detail_stacked_signal_style_val_file">Import from file</string>
     <string name="icon_detail_stacked_signal_style_val_clipboard">Import from clipboard</string>
-    <string name="icon_detail_stacked_signal_style_miui" translatable="false">HyperOS</string>
-    <string name="icon_detail_stacked_signal_style_ios" translatable="false">iOS</string>
+    <string name="icon_detail_stacked_signal_style_miui" translatable="false">HyperOS 3</string>
+    <string name="icon_detail_stacked_signal_style_ios" translatable="false">iOS 26</string>
+    <string name="icon_detail_stacked_signal_style_ios27" translatable="false">iOS 27</string>
     <string name="icon_detail_stacked_signal_style_custom" translatable="false">@string/common_custom</string>
     <string name="icon_detail_stacked_signal_alpha_fg">Fill opacity</string>
     <string name="icon_detail_stacked_signal_alpha_bg">Background opacity</string>
     <string name="icon_detail_stacked_signal_alpha_error">No service opacity</string>
+    <string name="icon_detail_stacked_signal_scale">Scale</string>
     <string name="ui_title_icon_detail_stacked_type">Mobile network type icon</string>
     <string name="icon_detail_stacked_type_font" translatable="false">@string/page_status_bar_font</string>
     <string name="icon_detail_stacked_type_font_tips">4G+, 5G+, 5GA, LTE texts will use condensed style with MiSans or SF Pro</string>

@@ -21,6 +21,7 @@
     <string name="button_enable">啟用</string>
     <string name="button_disable">禁用</string>
     <string name="button_ignore">忽略</string>
+    <string name="button_do_not_remind">不再提示</string>
     <string name="dialog_done">完成</string>
     <string name="dialog_warning">警告</string>
     <string name="dialog_error">錯誤</string>
@@ -90,6 +91,7 @@
     <string name="main_module_inactive_tips">模組未激活，請檢查 LSPosed 版本和模組激活信息後重試。</string>
     <string name="main_module_disabled_tips">模組未啟用，請在模組設定頁中啟用模組。</string>
     <string name="main_app_root_tips">沒有 root 權限會令某些功能無法正常運作。</string>
+    <string name="main_system_version_tips">目前系統版本低於 Android 16 或 HyperOS 3.0.300，大部分功能可能無法正常生效。</string>
     <string name="ui_title_menu_reboot">重新啟動</string>
     <string name="menu_reboot_system">重新啟動系統</string>
     <string name="menu_reboot_system_tips">確定要重新啟動系統嗎？</string>
@@ -283,12 +285,6 @@
     <string name="cleaner_market_tab_mine">我的</string>
     <string name="cleaner_market_filter_tab_warning">警告！當前可見的分頁數量少於兩個，這可能導致用戶界面異常！</string>
     <string name="cleaner_milink_fuck_hpplay">阻止創建樂播投屏相關文件</string>
-    <string name="cleaner_music_hide_karaoke">隱藏K歌</string>
-    <string name="cleaner_music_hide_karaoke_tips">從首頁的頂部應用程序欄中移除K歌選項</string>
-    <string name="cleaner_music_hide_long_audio">隱藏有聲</string>
-    <string name="cleaner_music_hide_long_audio_tips">從首頁的頂部應用程序欄中移除有聲選項</string>
-    <string name="cleaner_music_hide_discover">隱藏發現</string>
-    <string name="cleaner_music_hide_discover_tips">從首頁的頂部應用程式欄中移除發現選項</string>
     <string name="cleaner_music_hide_my_banner">隱藏“我的”頁的頂部橫幅</string>
     <string name="cleaner_music_hide_my_rec_playlist">隱藏“我的”頁的底部歌曲推薦</string>
     <string name="cleaner_music_hide_fav_num">隱藏歌曲的被收藏次數</string>
@@ -371,6 +367,8 @@
     <string name="cleaner_browser_switch_env">切換内部地址</string>
     <string name="cleaner_browser_switch_env_tips">使用預發佈環境。可能可以移除部分廣告。可能會導致無法使用自訂搜尋引擎等設定，請先設定完再開啟！</string>
     <string name="cleaner_browser_disable_update">停用更新檢查</string>
+    <string name="cleaner_browser_sync_user_agent_metadata">同步 User-Agent 資料</string>
+    <string name="cleaner_browser_sync_user_agent_metadata_tips">在切換手機版和桌面版 User-Agent 時，同步更新 User-Agent Client Hints 與 navigator.userAgentData。</string>
     <string name="others_miai_hide_watermark">隱藏内測版本同人工智能生成内容水印</string>
     <string name="others_mimirror_all_app">所有應用程式都可在其他裝置上打開</string>
     <string name="others_search_more_search_engines">添加更多搜尋引擎選項</string>
