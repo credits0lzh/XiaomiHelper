@@ -73,6 +73,7 @@ private val netSpeedKeys: Set<PreferenceKey<*>> = setOf(
     Preferences.SystemUI.StatusBar.IconDetail.NET_SPEED_MODE,
     Preferences.SystemUI.StatusBar.IconDetail.NET_SPEED_UNIT_MODE,
     Preferences.SystemUI.StatusBar.IconDetail.NET_SPEED_REFRESH,
+    Preferences.SystemUI.StatusBar.IconDetail.NET_SPEED_SCALE,
     Preferences.SystemUI.StatusBar.Font.CUSTOM_NET_SPEED_NUMBER,
     Preferences.SystemUI.StatusBar.Font.NET_SPEED_NUMBER_WEIGHT,
     Preferences.SystemUI.StatusBar.Font.CUSTOM_NET_SPEED_UNIT,
@@ -242,7 +243,8 @@ class IconDetailViewModel(
         return NetSpeedState(
             style = prefRepo.get(Preferences.SystemUI.StatusBar.IconDetail.NET_SPEED_MODE),
             unitStyle = prefRepo.get(Preferences.SystemUI.StatusBar.IconDetail.NET_SPEED_UNIT_MODE),
-            refreshPerSecond = prefRepo.get(Preferences.SystemUI.StatusBar.IconDetail.NET_SPEED_REFRESH),
+            refreshIntervalSeconds = prefRepo.get(Preferences.SystemUI.StatusBar.IconDetail.NET_SPEED_REFRESH).coerceIn(0, 6),
+            scale = prefRepo.get(Preferences.SystemUI.StatusBar.IconDetail.NET_SPEED_SCALE).coerceIn(0.5f, 1.5f),
             numberFont = FontState(
                 enabled = prefRepo.get(Preferences.SystemUI.StatusBar.Font.CUSTOM_NET_SPEED_NUMBER),
                 weight = prefRepo.get(Preferences.SystemUI.StatusBar.Font.NET_SPEED_NUMBER_WEIGHT),
