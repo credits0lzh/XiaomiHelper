@@ -177,7 +177,6 @@
     <string name="security_security_bubble_restriction">アプリのバブル通知の制限を解除する</string>
     <string name="security_security_system_app_wifi">システムアプリのWi-Fi管理権限を許可する</string>
     <string name="security_security_icon_open">アプリ情報のアイコンをタップしてアプリを起動</string>
-    <string name="security_power_block_battery_whitelist">バッテリーの最適化のホワイトリストによる復元を防ぐ</string>
     <!-- InterconnectionPage -->
     <string name="cleaner_milink_fuck_hpplay">｢hpplay｣フォルダの作成をブロックする</string>
     <string name="others_mimirror_all_app">すべてのアプリを別のデバイスで開く事を可能にする</string>

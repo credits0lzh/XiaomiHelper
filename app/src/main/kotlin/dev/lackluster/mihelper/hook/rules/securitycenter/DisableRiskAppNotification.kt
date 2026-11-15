@@ -24,7 +24,8 @@ import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
 import dev.lackluster.mihelper.hook.base.BaseHooker
 import dev.lackluster.mihelper.hook.utils.DexKit
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.ifTrue
 import org.luckypray.dexkit.query.enums.StringMatchType
 
 object DisableRiskAppNotification : BaseHooker() {
@@ -58,14 +59,13 @@ object DisableRiskAppNotification : BaseHooker() {
     }
 
     override fun onInit() {
-        registerDisposeCleanup(
-            Preferences.SecurityCenter.DISABLE_RISK_APP_NOTIF.observe {
-                updateSelfState(it)
-            }
-        )
-        metIsSupportRiskAppIntercept
-        metIsSupportMalwareStartupIntercept
-        metRegisterTrackAntiVursData
+        Preferences.SecurityCenter.DISABLE_RISK_APP_NOTIF.get().also {
+            updateSelfState(it)
+        }.ifTrue {
+            metIsSupportRiskAppIntercept
+            metIsSupportMalwareStartupIntercept
+            metRegisterTrackAntiVursData
+        }
     }
     
     override fun onStart() {

@@ -159,8 +159,13 @@ fun SecurityCenterPage() {
                 title = stringResource(R.string.security_power_unlock_custom_refresh),
             )
             SwitchPreference(
+                key = Preferences.PowerKeeper.BLOCK_REVERT_BATTERY_POLICY,
+                title = stringResource(R.string.security_power_block_revert_battery_policy),
+            )
+            SwitchPreference(
                 key = Preferences.PowerKeeper.BLOCK_BATTERY_WHITELIST,
                 title = stringResource(R.string.security_power_block_battery_whitelist),
+                summary = stringResource(R.string.security_power_block_battery_whitelist_tips)
             )
             SwitchPreference(
                 key = Preferences.PowerKeeper.GMS_BG_RUNNING,

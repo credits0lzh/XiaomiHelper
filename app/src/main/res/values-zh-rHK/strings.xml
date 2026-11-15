@@ -362,7 +362,7 @@
     <string name="security_lbe_clipboard_toast">使用 Toast 顯示剪貼板讀取提示</string>
     <string name="security_lbe_clipboard_toast_tips">使用 Toast 會讓提示背後的元素仍能點擊</string>
     <string name="security_power_unlock_custom_refresh">自訂高更新率應用程式</string>
-    <string name="security_power_block_battery_whitelist">阻止還原電池優化白名單</string>
+
     <string name="security_power_gms_bg_running">移除 GMS 後台運行限制</string>
     <string name="security_power_gms_bg_running_tips">僞裝成國際版系統，允許 GMS 在後台運行，防止 FCM 連缐在熒幕鎖定後被斷開。</string>
     <string name="cleaner_browser_debug_mode">Debug 模式</string>

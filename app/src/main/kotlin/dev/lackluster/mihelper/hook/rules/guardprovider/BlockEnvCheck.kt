@@ -20,21 +20,25 @@
 
 package dev.lackluster.mihelper.hook.rules.guardprovider
 
+import com.highcapable.kavaref.KavaRef.Companion.resolve
+import com.highcapable.kavaref.condition.type.Modifiers
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.base.BaseHooker
 import dev.lackluster.mihelper.hook.utils.DexKit
 import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.ifTrue
+import dev.lackluster.mihelper.hook.utils.toTyped
 import org.luckypray.dexkit.query.enums.StringMatchType
-import java.lang.reflect.Modifier
+import java.util.Arrays
 
-object BlockEnvCheck : StaticHooker() {
-    private val metCheckRoot by lazy {
-        DexKit.findMethodWithCache("root_check") {
+object BlockEnvCheck : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = false
+
+    private val clzDeviceStateReporter by lazy {
+        DexKit.findClassWithCache("device_state_reporter") {
             matcher {
-                returnType = "boolean"
-                addUsingString("/system/bin/su", StringMatchType.Equals)
-                addUsingString("/system/xbin/su", StringMatchType.Equals)
+                addUsingString("device_state.xml", StringMatchType.Equals)
+                addUsingString("DeviceStateReporter", StringMatchType.Equals)
             }
         }
     }
@@ -47,35 +51,40 @@ object BlockEnvCheck : StaticHooker() {
             }
         }
     }
-    private val metCheckSuFile by lazy {
-        DexKit.findMethodsWithCache("su_check") {
-            matcher {
-                returnType = "boolean"
-                paramCount = 0
-                modifiers(Modifier.STATIC)
-            }
-            searchClasses = checkRootClass.mapNotNull { DexKit.withBridge { getClassData(it.className) } }
-        }
-    }
 
     override fun onInit() {
         Preferences.GuardProvider.BLOCK_ENV_CHECK.get().also {
             updateSelfState(it)
-        }.ifTrue {
-            metCheckRoot
-            checkRootClass
-            metCheckSuFile
         }
+        clzDeviceStateReporter
+        checkRootClass
     }
 
-    override fun onHook() {
-        metCheckRoot?.getMethodInstance(classLoader)?.hook {
-            result(false)
+    override fun onStart() {
+        clzDeviceStateReporter?.getInstance(classLoader)?.apply {
+            val fldType = resolve().firstFieldOrNull {
+                type(Int::class)
+                modifiers(Modifiers.FINAL)
+            }?.toTyped<Int>()
+            resolve().firstMethodOrNull {
+                name = "run"
+            }?.hook {
+                if (fldType?.get(thisObject) == 6) {
+                    result(null)
+                } else {
+                    result(proceed())
+                }
+            }
         }
-        metCheckSuFile.map {
-            it.getMethodInstance(classLoader)
-        }.hookAll {
-            result(false)
+        checkRootClass.forEach { clz ->
+            clz.getInstance(classLoader).apply {
+                resolve().firstFieldOrNull {
+                    type(Array<String>::class)
+                    modifiers(Modifiers.STATIC)
+                }?.toTyped<Array<String>>()?.get(null)?.let { suPaths ->
+                    Arrays.fill(suPaths, "/invalid/path/to/su")
+                }
+            }
         }
     }
 }

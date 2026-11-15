@@ -297,7 +297,6 @@
     <string name="security_lbe_clipboard_toast">Usar dica para mostrar prompts de leitura da área de transferência</string>
     <string name="security_lbe_clipboard_toast_tips">Usar a dica permite que o elemento por trás do prompt seja clicável</string>
     <string name="security_power_unlock_custom_refresh">Desbloquear Apps que usam alta taxa de atualização</string>
-    <string name="security_power_block_battery_whitelist">Impedir a recuperação da lista de permissões de pilha</string>
     <string name="security_power_gms_bg_running">Remover restrições de execução em segundo plano do GMS</string>
     <string name="security_power_gms_bg_running_tips">Disfarçado de versão internacional do sistema, permite que o GMS execute em segundo plano, a evitar que a conexão do FCM seja interrompida após o bloqueio do ecrã.</string>
     <string name="others_miai_hide_watermark">Ocultar marcas d\'água beta e AIGC</string>

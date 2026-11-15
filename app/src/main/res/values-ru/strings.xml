@@ -566,7 +566,6 @@
     <string name="security_lbe_block_remove_auto_start_tips">Предотвращает удаление системой прав на автозапуск приложений</string>
     <string name="security_lbe_clipboard_toast">Используйте всплывающие уведомления для отображения запросов на чтение содержимого буфера обмена</string>
     <string name="security_lbe_clipboard_toast_tips">Использование всплывающего окна позволяет сделать элемент, расположенный за подсказкой, активным</string>
-    <string name="security_power_block_battery_whitelist">Запретить восстановление белого списка оптимизации аккумулятора</string>
     <string name="security_power_gms_bg_running">Снять ограничения на работу GMS в фоновом режиме</string>
     <string name="security_power_gms_bg_running_tips">Под видом международной версии системы она позволяет GMS работать в фоновом режиме, предотвращая обрыв соединения FCM после блокировки экрана.</string>
     <string name="security_power_unlock_custom_refresh">Разблокировка приложений с высокой частотой обновления</string>

@@ -488,7 +488,9 @@
     <string name="ui_title_security_mi_trust_service" translatable="false">@string/scope_mi_trust</string>
     <string name="mi_trust_disable_risk_check" translatable="false">@string/cleaner_package_skip_risk_check</string>
     <string name="security_power_unlock_custom_refresh">Unlock Apps using high refresh rate</string>
-    <string name="security_power_block_battery_whitelist">Prevent recovery of battery optimization whitelist</string>
+    <string name="security_power_block_revert_battery_policy">Prevent battery policy modification by whitelist</string>
+    <string name="security_power_block_battery_whitelist">Disable battery policy whitelist</string>
+    <string name="security_power_block_battery_whitelist_tips">Disables both local and cloud whitelists. This may cause system services to be restricted by the system, resulting in unexpected behavior. Enable with caution.</string>
     <string name="security_power_gms_bg_running">Remove restrictions on GMS background running</string>
     <string name="security_power_gms_bg_running_tips">Disguised as an international version of the system, it allows GMS to run in the background, preventing the FCM connection from being interrupted after locking the screen.</string>
     <!-- OthersPage -->

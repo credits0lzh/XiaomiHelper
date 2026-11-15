@@ -1,31 +1,52 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * This file is part of XiaomiHelper project
+ * Copyright (C) 2026 HowieHChen, howie.dev@outlook.com
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.lackluster.mihelper.hook.rules.powerkeeper
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
+import dev.lackluster.mihelper.hook.utils.d
 
-/**
- * @link https://github.com/kooritea/fcmfix/blob/master/app/src/main/java/com/kooritea/fcmfix/xposed/PowerkeeperFix.java
- */
-object GMSBackgroundRunning : StaticHooker() {
+object GMSBackgroundRunning : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     override fun onInit() {
-        updateSelfState(Preferences.PowerKeeper.GMS_BG_RUNNING.get())
+        registerDisposeCleanup(
+            Preferences.PowerKeeper.GMS_BG_RUNNING.observe {
+                updateSelfState(it)
+            }
+        )
     }
 
-    override fun onHook() {
+    override fun onStart() {
         "com.miui.powerkeeper.utils.GmsObserver".toClassOrNull()?.apply {
             resolve().optional(true).firstMethodOrNull {
-                name = "updateGoogleReletivesWakelock"
+                name = "updateFrameworkGmsNetStatus"
             }?.hook {
                 val newArgs = args.toTypedArray()
+                d { "updateFrameworkGmsNetStatus(${newArgs[0]})" }
                 newArgs[0] = false
                 result(proceed(newArgs))
-            }
-            resolve().firstMethodOrNull {
-                name = "isGmsControlEnabled"
-            }?.hook {
-                result(false)
             }
         }
         $$"com.miui.powerkeeper.provider.SimpleSettings$Misc".toClassOrNull()?.apply {

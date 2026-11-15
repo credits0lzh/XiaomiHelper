@@ -27,7 +27,7 @@ import android.widget.ImageView
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
 import dev.lackluster.mihelper.hook.base.BaseHooker
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 import dev.lackluster.mihelper.hook.utils.extraOf
 import dev.lackluster.mihelper.hook.utils.toTyped
 
@@ -39,11 +39,9 @@ object AppDetailClickOpen : BaseHooker() {
     private val clzAppDetailTitlePreference by "com.miui.appmanager.widget.AppDetailTitlePreference".lazyClassOrNull()
 
     override fun onInit() {
-        registerDisposeCleanup(
-            Preferences.SecurityCenter.CLICK_ICON_TO_OPEN.observe {
-                updateSelfState(it)
-            }
-        )
+        Preferences.SecurityCenter.CLICK_ICON_TO_OPEN.get().also {
+            updateSelfState(it)
+        }
     }
 
     override fun onStart() {

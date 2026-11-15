@@ -24,18 +24,16 @@ import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
 import dev.lackluster.mihelper.data.preference.Preferences
 import dev.lackluster.mihelper.hook.base.BaseHooker
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 
 object FuckXL : BaseHooker() {
     override val supportsHotReload: Boolean = true
     override val supportsRuntimeToggle: Boolean = false
 
     override fun onInit() {
-        registerDisposeCleanup(
-            Preferences.Download.FUCK_XL.observe {
-                updateSelfState(it)
-            }
-        )
+        Preferences.Download.FUCK_XL.get().also {
+            updateSelfState(it)
+        }
     }
 
     override fun onStart() {

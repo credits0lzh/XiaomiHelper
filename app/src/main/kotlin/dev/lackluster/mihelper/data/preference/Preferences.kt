@@ -197,7 +197,8 @@ object Preferences {
 
     object PowerKeeper {
         val UNLOCK_CUSTOM_REFRESH = PreferenceKey("power_custom_refresh", false)
-        val BLOCK_BATTERY_WHITELIST = PreferenceKey("power_battery_whitelist", false)
+        val BLOCK_BATTERY_WHITELIST = PreferenceKey("power_block_battery_whitelist", false)
+        val BLOCK_REVERT_BATTERY_POLICY = PreferenceKey("power_battery_whitelist", false)
         val GMS_BG_RUNNING = PreferenceKey("power_gms_bg_running", false)
     }
 

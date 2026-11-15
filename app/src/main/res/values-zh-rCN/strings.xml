@@ -340,7 +340,6 @@
     <string name="android_freeform_allow_more">允许打开更多小窗</string>
     <string name="android_freeform_allow_more_tips">修改小窗数量上限为255，可同时打开更多小窗</string>
     <string name="security_security_icon_open">点击应用信息页的图标启动应用</string>
-    <string name="security_power_block_battery_whitelist">阻止恢复电池优化白名单</string>
     <string name="cleaner_milink_fuck_hpplay">阻止创建乐播投屏相关文件</string>
     <string name="clock_general_geek">极客模式</string>
     <string name="clock_general_custom_text_size">自定义状态栏时间字号</string>
@@ -405,6 +404,9 @@
     <string name="security_cleaner_hide_home_rec_tips">隐藏功能网格下方的功能推荐横幅</string>
     <string name="security_cleaner_hide_home_common">隐藏常用功能</string>
     <string name="security_cleaner_hide_home_popular">隐藏大家都在用</string>
+    <string name="security_power_block_revert_battery_policy">阻止系统根据白名单修改电池策略</string>
+    <string name="security_power_block_battery_whitelist">禁用电池策略白名单</string>
+    <string name="security_power_block_battery_whitelist_tips">禁用本地和云端白名单，可能导致系统服务被系统压制造成异常。请谨慎开启！</string>
     <string name="security_power_gms_bg_running">移除 GMS 后台运行限制</string>
     <string name="security_lbe_block_remove_auto_start_tips">阻止系统自动关闭应用的自启动权限</string>
     <string name="security_lbe_clipboard_toast">使用 Toast 显示剪贴板读取提示</string>

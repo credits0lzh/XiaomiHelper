@@ -374,7 +374,6 @@
     <string name="security_lbe_clipboard_toast">Sử dụng Toast để hiển thị lời nhắc khi đọc bảng nhớ tạm</string>
     <string name="security_lbe_clipboard_toast_tips">Sử dụng Toast cho phép bạn nhấp được vào phần tử nằm phía sau thông báo nhắc nhở</string>
     <string name="security_power_unlock_custom_refresh">Mở khóa các ứng dụng sử dụng tốc độ làm mới cao</string>
-    <string name="security_power_block_battery_whitelist">Ngăn khôi phục danh sách trắng tối ưu hóa pin</string>
     <string name="security_power_gms_bg_running">Xóa hạn chế chạy ngầm đối với GMS</string>
     <string name="security_power_gms_bg_running_tips">Nguỵ trang thành phiên bản hệ thống quốc tế, cho phép GMS chạy nền, ngăn kết nối FCM bị ngắt sau khi khoá màn hình.</string>
     <string name="others_aiengine_copy_link_island_browser">Mở URL đã sao chép bằng bất kỳ trình duyệt nào</string>
