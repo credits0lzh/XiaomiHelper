@@ -26,12 +26,16 @@ import android.app.Activity
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.base.BaseHooker
 import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import dev.lackluster.mihelper.hook.utils.d
 import dev.lackluster.mihelper.hook.utils.toTyped
 
-object AdBlocker : StaticHooker() {
+object AdBlocker : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     private val clzPagerTabsInfo by "com.xiaomi.market.ui.PagerTabsInfo".lazyClassOrNull()
     private val clzSearchHistoryComponent by "com.xiaomi.market.common.component.componentbeans.SearchHistoryComponent".lazyClassOrNull()
     private val clzListAppComponent by "com.xiaomi.market.common.component.componentbeans.ListAppComponent".lazyClassOrNull()
@@ -80,12 +84,60 @@ object AdBlocker : StaticHooker() {
     }
 
     override fun onInit() {
+        registerDisposeCleanup(
+            Preferences.Market.AD_BLOCKER.observe {
+                updateSelfState(it)
+            }
+        )
         updateSelfState(Preferences.Market.AD_BLOCKER.get())
     }
 
-    override fun onHook() {
+    override fun onStart() {
+        "com.xiaomi.market.util.UIUtils".toClassOrNull()?.apply {
+            val metSetStatusBarDarkMode = resolve().firstMethodOrNull {
+                name = "setStatusBarDarkMode"
+                parameters(Activity::class, Boolean::class)
+                modifiers(Modifiers.STATIC)
+            }?.toTyped<Unit>()
+            resolve().firstMethodOrNull {
+                name = "setStatusBarDarkModeV2"
+            }?.hook {
+                val activity = getArg(0) as? Activity
+                val dark = getArg(1) as? Boolean
+                if (activity != null && dark != null && metSetStatusBarDarkMode != null) {
+                    metSetStatusBarDarkMode.invoke(null, activity, dark)
+                    result(null)
+                } else {
+                    result(proceed())
+                }
+            }
+        }
+        $$"com.xiaomi.market.common.analytics.onetrack.ExperimentManager$Companion".toClassOrNull()?.apply {
+            resolve().optional().firstMethodOrNull {
+                name = "isEnableScheduleRiskNotification"
+            }?.hook {
+                result(false)
+            }
+        }
         // 搜索页AB
         "com.xiaomi.market.ui.search_v2.SearchPageUtils".toClassOrNull()?.apply {
+            val enumNormalSearchStyle = "com.xiaomi.market.ui.search_v2.SearchPageStyle".toClassOrNull()
+                ?.resolve()?.firstMethodOrNull {
+                    name = "valueOf"
+                    parameters(String::class)
+                    modifiers(Modifiers.STATIC)
+                }?.invoke("NORMAL_SEARCH_STYLE")
+            resolve().firstMethodOrNull {
+                name = "getSearchActivityInstanceStyle"
+            }?.hook {
+                result(enumNormalSearchStyle)
+            }
+            resolve().firstMethodOrNull {
+                name = "isUseAiConversation"
+                parameterCount = 0
+            }?.hook {
+                result(false)
+            }
             resolve().firstMethodOrNull {
                 name = "isUseSearchPageV2"
                 parameterCount = 0
@@ -155,6 +207,21 @@ object AdBlocker : StaticHooker() {
                 result(true)
             }
         }
+        // 果园
+//        "com.xiaomi.market.util.OrchardEntranceManager".toClassOrNull()?.apply {
+//            resolve().firstMethodOrNull {
+//                name = "isOpen"
+//            }?.hook {
+//                result(false)
+//            }
+//        }
+        "com.xiaomi.market.util.UpgradeGuideConfigManager".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "isOrchardExperiment"
+            }?.hook {
+                result(false)
+            }
+        }
         // 更新页
         "com.xiaomi.market.ui.UpdateListRvAdapter".toClassOrNull()?.apply {
             val forceExpanded = resolve().firstFieldOrNull {
@@ -196,19 +263,19 @@ object AdBlocker : StaticHooker() {
             }
         }
         // 我的页应用升级卡片果园皮肤
-        "com.xiaomi.market.business_ui.main.mine.view.MineUpdateView".toClassOrNull()?.apply {
-            setOf(
-                "applyUpdateViewOrchardStyle",
-                "applyViewOrchardState",
-                "applyEmptyViewOrchardState"
-            ).forEach { methodName ->
-                resolve().optional().firstMethodOrNull {
-                    name = methodName
-                }?.hook {
-                    result(null)
-                }
-            }
-        }
+//        "com.xiaomi.market.business_ui.main.mine.view.MineUpdateView".toClassOrNull()?.apply {
+//            setOf(
+//                "applyUpdateViewOrchardStyle",
+//                "applyViewOrchardState",
+//                "applyEmptyViewOrchardState"
+//            ).forEach { methodName ->
+//                resolve().optional().firstMethodOrNull {
+//                    name = methodName
+//                }?.hook {
+//                    result(null)
+//                }
+//            }
+//        }
         // 首页搜索框左侧的动态活动入口
         "com.xiaomi.market.util.EntranceManager".toClassOrNull()?.apply {
             resolve().optional().firstMethodOrNull {
@@ -228,6 +295,20 @@ object AdBlocker : StaticHooker() {
                 name = "showNewMessageTag"
             }?.hook {
                 result(null)
+            }
+        }
+        "com.xiaomi.market.widget.Miux4TabController".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "setNumber"
+            }?.hook {
+                result(null)
+            }
+            resolve().firstMethodOrNull {
+                name = "showDot"
+            }?.hook {
+                val newArgs = args.toTypedArray()
+                newArgs[0] = false
+                result(proceed(newArgs))
             }
         }
         // 首页启动弹窗
@@ -411,7 +492,7 @@ object AdBlocker : StaticHooker() {
             val tags = fldTags?.get(pagerTabsInfo)?.toMutableList() ?: return@let
             val abNormals = fldAbNormals?.get(pagerTabsInfo)?.toMutableList() ?: return@let
             val removeIndex = mutableSetOf<Int>()
-            if (urls.isNotEmpty() && urls.size == titles.size && urls.size == tags.size && urls.size == abNormals.size) {
+            if (urls.isNotEmpty() && urls.size == titles.size && urls.size == tags.size) {
                 urls.forEachIndexed { index, url ->
                     if (url.startsWith("http")) {
                         removeIndex.add(index)
@@ -423,10 +504,10 @@ object AdBlocker : StaticHooker() {
                     }
                 }
                 removeIndex.sortedDescending().forEach { index ->
-                    urls.removeAt(index)
-                    titles.removeAt(index)
-                    tags.removeAt(index)
-                    abNormals.removeAt(index)
+                    if (index in urls.indices) urls.removeAt(index)
+                    if (index in titles.indices) titles.removeAt(index)
+                    if (index in tags.indices) tags.removeAt(index)
+                    if (index in abNormals.indices) abNormals.removeAt(index)
                 }
             }
             abNormals.replaceAll { false }

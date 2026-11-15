@@ -24,15 +24,22 @@ package dev.lackluster.mihelper.hook.rules.market
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 
-object DisableCustomizeIcon : StaticHooker() {
+object DisableCustomizeIcon : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     override fun onInit() {
-        updateSelfState(Preferences.Market.DISABLE_CUSTOMIZE_ICON.get())
+        registerDisposeCleanup(
+            Preferences.Market.DISABLE_CUSTOMIZE_ICON.observe {
+                updateSelfState(it)
+            }
+        )
     }
 
-    override fun onHook() {
+    override fun onStart() {
         "com.xiaomi.market.customize_icon.CustomizeIconDataEditor".toClassOrNull()?.apply {
             resolve().firstMethodOrNull {
                 name = "isSystemSupportCustomizeIcon"

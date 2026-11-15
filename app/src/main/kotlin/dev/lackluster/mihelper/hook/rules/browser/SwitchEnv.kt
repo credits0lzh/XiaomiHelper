@@ -21,19 +21,21 @@
 package dev.lackluster.mihelper.hook.rules.browser
 
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.base.BaseHooker
 import dev.lackluster.mihelper.hook.utils.DexKit
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.ifTrue
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object SwitchEnv : StaticHooker() {
+object SwitchEnv : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     private val envGetMethod by lazy {
         DexKit.findMethodWithCache("env_get") {
             matcher {
                 returnType = "java.lang.String"
                 addUsingString("environment_flag_file", StringMatchType.Equals)
-                addUsingString("environment_flag", StringMatchType.Equals)
+                addUsingString("environment_flag", StringMatchType.StartsWith)
                 addUsingString("0", StringMatchType.Equals)
             }
         }
@@ -43,22 +45,23 @@ object SwitchEnv : StaticHooker() {
             matcher {
                 returnType = "void"
                 addUsingString("environment_flag_file", StringMatchType.Equals)
-                addUsingString("environment_flag", StringMatchType.Equals)
+                addUsingString("environment_flag", StringMatchType.StartsWith)
                 addUsingString("3", StringMatchType.Equals)
             }
         }
     }
 
     override fun onInit() {
-        Preferences.Browser.SWITCH_ENV.get().also {
-            updateSelfState(it)
-        }.ifTrue {
-            envGetMethod
-            envSetMethod
-        }
+        registerDisposeCleanup(
+            Preferences.Browser.SWITCH_ENV.observe {
+                updateSelfState(it)
+            }
+        )
+        envGetMethod
+        envSetMethod
     }
 
-    override fun onHook() {
+    override fun onStart() {
         envGetMethod?.getMethodInstance(classLoader)?.hook {
             result("1")
         }

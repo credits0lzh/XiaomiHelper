@@ -130,8 +130,7 @@
     <string name="common_invalid_input">无效输入</string>
     <string name="scope_package_installer">应用包管理组件</string>
     <string name="cleaner_package_no_network">伪装成无网状态</string>
-    <string name="cleaner_package_no_count_check">禁用频繁安装应用检查</string>
-    <string name="cleaner_package_skip_risk_check">禁用风险监测</string>
+    <string name="mi_trust_disable_risk_check">禁用风险监测</string>
     <string name="page_status_bar_icon_tuner">图标调整</string>
     <string name="systemui_statusbar_region_sampling_disable_tips">始终禁用，可能会导致开启强制深色的应用的状态栏对比度不正确</string>
     <string name="ui_title_systemui_lock_screen">锁屏</string>
@@ -327,7 +326,6 @@
     <string name="home_others_force_color_scheme_minus">负一屏颜色</string>
     <string name="home_others_force_color_scheme_minus_tips">指定负一屏状态栏文本和图标的颜色（忽略壁纸颜色）</string>
     <string name="cleaner_common_ad_blocker">屏蔽广告</string>
-    <string name="cleaner_package_block_upload_app_info">阻止安装时上传应用信息</string>
     <string name="cleaner_package_remove_element">禁用多余的功能并移除相关界面</string>
     <string name="android_display_font_scale_200">200 (200%)</string>
     <string name="android_display_rotation_suggestions">旋转建议指示器</string>
@@ -521,7 +519,6 @@
     <string name="cleaner_market_ignore_restrict">忽略建议限制</string>
     <string name="cleaner_market_filter_unknown_tabs">过滤掉未知标签页</string>
     <string name="cleaner_market_filter_unknown_tabs_tips">过滤掉所有未在下方显示的标签页</string>
-    <string name="cleaner_market_bottom_tab_blur_tips">强制开启底部标签栏的模糊效果</string>
     <string name="cleaner_market_disable_customize_icon_tips">禁用应用商店将桌面应用图标替换为营销图标的能力</string>
     <string name="cleaner_market_filter_tab">过滤底部标签页</string>
     <string name="cleaner_market_filter_tab_tips">隐藏标签页（及对应页面）</string>
@@ -529,7 +526,6 @@
     <string name="cleaner_market_tab_mini_game">小游戏</string>
     <string name="cleaner_market_tab_mine">我的</string>
     <string name="cleaner_market_filter_tab_warning">警告！当前可见的标签页数量少于两个，这可能导致用户界面异常！</string>
-    <string name="cleaner_market_bottom_tab_blur">模糊效果</string>
     <string name="systemui_lock_flashlight_on">自动打开手电筒</string>
     <string name="systemui_lock_keep_notif">解锁后保留通知</string>
     <string name="systemui_lock_keep_notif_tips">通知会始终展示在锁屏界面上，直到被手动清除</string>

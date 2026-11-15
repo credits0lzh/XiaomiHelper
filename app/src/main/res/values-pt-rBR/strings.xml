@@ -225,7 +225,6 @@
     <string name="cleaner_common_skip_splash">Desativar Tela inicial</string>
     <string name="cleaner_common_skip_splash_tips">Também deve desativar os anúncios na Tela inicial (sem garantias)</string>
     <string name="security_guard_block_upload_app">Impedir upload automático da lista de apps instalados</string>
-    <string name="cleaner_package_block_upload_app_info">Impedir upload de informações sobre o app quando ele estiver instalado</string>
     <string name="cleaner_browser_hide_homepage_topbar">Ocultar barra superior da página inicial</string>
     <string name="cleaner_browser_hide_homepage_topbar_tips">Oculte a barra superior da página inicial simplificada, que inclui configurações e botões de alternância de modo.</string>
     <string name="cleaner_downloadui_hide_xl">Ocultar ícones e texto da Xunlei</string>
@@ -236,8 +235,6 @@
     <string name="cleaner_market_block_update_dailog_tips">Bloqueie a caixa de diálogo que solicita que você ative o push de atualização, quando o push de atualização estiver desativado e o botão de atualização for clicado.</string>
     <string name="cleaner_market_hide_app_security">Ocultar segurança do app</string>
     <string name="cleaner_market_hide_app_security_tips">Oculte o cartão de segurança do app na minha página</string>
-    <string name="cleaner_market_bottom_tab_blur">Efeito de blur</string>
-    <string name="cleaner_market_bottom_tab_blur_tips">Force a ativação do efeito de blur na barra de guias inferior</string>
     <string name="cleaner_market_filter_tab">Filtrar guias inferiores</string>
     <string name="cleaner_market_filter_tab_tips">Ocultar guias inúteis (e páginas correspondentes)</string>
     <string name="cleaner_market_ignore_restrict">Ignorar limites sugeridos</string>
@@ -258,9 +255,8 @@
     <string name="cleaner_music_hide_fav_num">Ocultar contagem de músicas favoritas</string>
     <string name="cleaner_music_hide_fav_num_tips">Oculte a contagem de favoritos exibidos nos ícones de favoritos. Pode afetar o desempenho.</string>
     <string name="cleaner_package_remove_element">Desativar recursos redundantes</string>
-    <string name="cleaner_package_skip_risk_check">Desativar verificação de risco</string>
+    <string name="mi_trust_disable_risk_check">Desativar verificação de risco</string>
     <string name="cleaner_package_no_network">Disfarçar como nenhuma rede</string>
-    <string name="cleaner_package_no_count_check">Desativar verificação de apps instalados com frequência</string>
     <string name="cleaner_package_install_source">Fonte de instalação personalizada</string>
     <string name="cleaner_package_install_source_tips">Ignore as restrições de instalação de apps do sistema disfarçando a fonte de instalação como um app do sistema.</string>
     <string name="cleaner_package_install_source_file">Arquivos</string>

@@ -20,58 +20,37 @@
 
 package dev.lackluster.mihelper.hook.rules.browser
 
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.DexKit
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.ifTrue
-import org.luckypray.dexkit.query.enums.StringMatchType
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 
-object DisableUpdateCheck : StaticHooker() {
-    private val miMarketUpdateClass by lazy {
-        DexKit.withBridge {
-            findClass {
-                matcher {
-                    addUsingString("MarketUpdateAgent", StringMatchType.Equals)
-                    addUsingString("packageName", StringMatchType.Equals)
-                }
-            }
-        }
-    }
-    private val miMarketDoInBackground by lazy {
-        DexKit.findMethodWithCache("disable_update_1") {
-            matcher {
-                name = "doInBackground"
-                returnType = "java.lang.Object"
-            }
-            searchClasses = miMarketUpdateClass
-        }
-    }
-    private val miMarketOnPostExecute by lazy {
-        DexKit.findMethodWithCache("disable_update_2") {
-            matcher {
-                name = "onPostExecute"
-                paramTypes("java.lang.Object")
-            }
-            searchClasses = miMarketUpdateClass
-        }
-    }
+object DisableUpdateCheck : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
 
     override fun onInit() {
-        Preferences.Browser.BLOCK_UPDATE.get().also {
-            updateSelfState(it)
-        }.ifTrue {
-            miMarketDoInBackground
-            miMarketOnPostExecute
-        }
+        registerDisposeCleanup(
+            Preferences.Browser.BLOCK_UPDATE.observe {
+                updateSelfState(it)
+            }
+        )
     }
 
-    override fun onHook() {
-        miMarketDoInBackground?.getMethodInstance(classLoader)?.hook {
-            result(1)
-        }
-        miMarketOnPostExecute?.getMethodInstance(classLoader)?.hook {
-            result(null)
+    override fun onStart() {
+        $$"com.market.sdk.XiaomiUpdateAgent$CheckUpdateTask".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "doInBackground"
+                returnType("java.lang.Integer")
+            }?.hook {
+                result(1)
+            }
+            resolve().firstMethodOrNull {
+                name = "onPostExecute"
+                parameters("java.lang.Integer")
+            }?.hook {
+                result(null)
+            }
         }
     }
 }

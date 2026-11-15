@@ -22,78 +22,47 @@ package dev.lackluster.mihelper.hook.rules.browser
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.DexKit
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.ifTrue
-import org.luckypray.dexkit.query.enums.StringMatchType
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 
-object SkipSplash : StaticHooker() {
-    private val thirdPartyLaunchAdMethod by lazy {
-        DexKit.findMethodWithCache("skip_splash_third") {
-            matcher {
-                returnType = "void"
-                paramCount = 1
-                paramTypes = listOf("android.content.Context")
-                addUsingString("onTrackAppOpenThird appLaunchWay:", StringMatchType.Equals)
-                addUsingString("第三方调起", StringMatchType.Equals)
-            }
-        }
-    }
-    private val iconLaunchAdMethod by lazy {
-        DexKit.findMethodWithCache("skip_splash_icon") {
-            matcher {
-                returnType = "void"
-                addUsingString("SplashActiveAdManager", StringMatchType.Equals)
-                addUsingString("requestAd", StringMatchType.Equals)
-                addUsingString("msa_request", StringMatchType.Equals)
-            }
-        }
-    }
-    private val supportPassive by lazy {
-        DexKit.findMethodWithCache("skip_splash_support") {
-            matcher {
-                returnType = "boolean"
-                addUsingString("SystemSplashAd", StringMatchType.Equals)
-                addUsingString("support_passive", StringMatchType.Equals)
-                addUsingString("content://com.miui.systemAdSolution.extContentProvider/supportPassive", StringMatchType.Equals)
-            }
-        }
-    }
+object SkipSplash : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
 
     override fun onInit() {
-        Preferences.Browser.SKIP_SPLASH.get().also { 
-            updateSelfState(it)
-        }.ifTrue {
-            thirdPartyLaunchAdMethod
-            iconLaunchAdMethod
-            supportPassive
-        }
+        registerDisposeCleanup(
+            Preferences.Browser.SKIP_SPLASH.observe {
+                updateSelfState(it)
+            }
+        )
     }
 
-    override fun onHook() {
-        thirdPartyLaunchAdMethod?.getMethodInstance(classLoader)?.hook {
-            result(null)
+    override fun onStart() {
+        "com.android.browser.splash.SplashActiveAdManager".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "requestAd"
+            }?.hook {
+                result(null)
+            }
         }
-        iconLaunchAdMethod?.getMethodInstance(classLoader)?.hook {
-            result(null)
-        }
-        supportPassive?.getMethodInstance(classLoader)?.hook {
-            result(false)
+        "com.msa.sdk.core.splash.SystemSplashAd".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "getIsSupportPassiveSplashAd"
+            }?.hook {
+                result(false)
+            }
         }
         "com.android.browser.splash.SplashAdManager".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "shouldRequestThirdPartyAd"
+            }?.hook {
+                result(false)
+            }
             resolve().firstMethodOrNull {
                 name = "inWhiteList"
             }?.hook {
                 result(true)
             }
         }
-//            "com.android.browser.xiangkan.AppDownloadHelper".toClass().apply {
-//                method {
-//                    name = "onLoadData"
-//                }.hook {
-//                    intercept()
-//                }
-//            }
     }
 }

@@ -20,35 +20,30 @@
 
 package dev.lackluster.mihelper.hook.rules.browser
 
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.DexKit
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.ifTrue
-import org.luckypray.dexkit.query.enums.StringMatchType
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 
-object DebugMode : StaticHooker() {
-    private val debugMethod by lazy {
-        DexKit.findMethodWithCache("get_debug_mode") {
-            matcher {
-                name = "getDebugMode"
-                returnType = "boolean"
-                addUsingString("pref_key_debug_mode", StringMatchType.StartsWith)
-            }
-        }
-    }
+object DebugMode : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
 
     override fun onInit() {
-        Preferences.Browser.DEBUG_MODE.get().also {
-            updateSelfState(it)
-        }.ifTrue {
-            debugMethod
-        }
+        registerDisposeCleanup(
+            Preferences.Browser.DEBUG_MODE.observe {
+                updateSelfState(it)
+            }
+        )
     }
 
-    override fun onHook() {
-        debugMethod?.getMethodInstance(classLoader)?.hook {
-            result(true)
+    override fun onStart() {
+        "com.android.browser.BrowserSettings".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "getDebugMode"
+            }?.hook {
+                result(true)
+            }
         }
     }
 }

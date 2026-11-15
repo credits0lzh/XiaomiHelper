@@ -22,16 +22,27 @@ package dev.lackluster.mihelper.hook.rules.market
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object SkipSplash : StaticHooker() {
+object SkipSplash : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     override fun onInit() {
-        updateSelfState(Preferences.Market.SKIP_SPLASH.get())
+        registerDisposeCleanup(
+            Preferences.Market.SKIP_SPLASH.observe {
+                updateSelfState(it)
+            }
+        )
     }
 
-    override fun onHook() {
+    override fun onStart() {
         "com.xiaomi.market.ui.splash.SplashManager".toClassOrNull()?.apply {
+            val metNotifySplashDismiss = resolve().firstMethodOrNull {
+                name = "notifySplashDismiss"
+            }?.toTyped<Unit>()
             resolve().firstMethodOrNull {
                 name = "tryAdSplash"
             }?.hook {
@@ -40,6 +51,7 @@ object SkipSplash : StaticHooker() {
             resolve().firstMethodOrNull {
                 name = "trySplashWhenApplicationForeground"
             }?.hook {
+                metNotifySplashDismiss?.invoke(thisObject)
                 result(null)
             }
         }

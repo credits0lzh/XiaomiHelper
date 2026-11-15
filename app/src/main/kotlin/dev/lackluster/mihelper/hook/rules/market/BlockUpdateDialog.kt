@@ -22,22 +22,23 @@ package dev.lackluster.mihelper.hook.rules.market
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 
-object BlockUpdateDialog : StaticHooker() {
+object BlockUpdateDialog : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
+
     override fun onInit() {
-        updateSelfState(Preferences.Market.BLOCK_UPDATE_DIALOG.get())
+        registerDisposeCleanup(
+            Preferences.Market.BLOCK_UPDATE_DIALOG.observe {
+                updateSelfState(it)
+            }
+        )
     }
 
-    override fun onHook() {
-        "com.xiaomi.market.ui.UpdateListFragment".toClassOrNull()?.apply {
-            resolve().optional().firstMethodOrNull {
-                name = "tryShowDialog"
-            }?.hook {
-                result(null)
-            }
-        }
+    override fun onStart() {
         "com.xiaomi.market.ui.update.UpdatePushDialogManager".toClassOrNull()?.apply {
             resolve().firstMethodOrNull {
                 name = "tryShowDialog"

@@ -22,15 +22,38 @@ package dev.lackluster.mihelper.hook.rules.packageinstaller
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
+import org.luckypray.dexkit.query.enums.StringMatchType
 
-object DisguiseNoNet : StaticHooker() {
-    override fun onInit() {
-        updateSelfState(Preferences.PackageInstaller.DISGUISE_NO_NETWORK.get())
+object DisguiseNoNet : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
+    private val metGetConnectedState by lazy {
+        DexKit.findMethodWithCache("get_connected_state") {
+            matcher {
+                addUsingString("NetworkMonitor", StringMatchType.Equals)
+                addUsingString("getConnectedState", StringMatchType.StartsWith)
+                returnType = "int"
+            }
+        }
     }
 
-    override fun onHook() {
+    override fun onInit() {
+        registerDisposeCleanup(
+            Preferences.PackageInstaller.DISGUISE_NO_NETWORK.observe {
+                updateSelfState(it)
+            }
+        )
+        metGetConnectedState
+    }
+
+    override fun onStart() {
+        metGetConnectedState?.getMethodInstance(classLoader)?.hook {
+            result(1)
+        }
         "android.net.NetworkInfo".toClass().apply {
             resolve().firstMethodOrNull {
                 name = "isConnected"

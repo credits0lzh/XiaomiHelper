@@ -150,10 +150,8 @@
     <!-- CleanMasterPage -->
     <string name="cleaner_common_ad_blocker">広告ブロッカー</string>
     <string name="security_guard_block_upload_app">インストール済みのアプリ一覧のアップロードをブロックする</string>
-    <string name="cleaner_package_block_upload_app_info">アプリをインストール時の情報のアップロードをブロックする</string>
     <string name="cleaner_package_remove_element">冗長な機能を無効化して関連する要素を削除します</string>
-    <string name="cleaner_package_skip_risk_check">リスクの監視を禁止する</string>
-    <string name="cleaner_package_no_count_check">頻繁にインストールされるアプリのチェックを無効化する</string>
+    <string name="mi_trust_disable_risk_check">リスクの監視を禁止する</string>
     <string name="security_cleaner_lock_score">セキュリティスコアを固定する</string>
     <string name="security_cleaner_lock_score_tips">セキュリティスコアを100に固定して「最適化」ボタンを無効化します</string>
     <string name="security_security_disable_risk_app_notif">「悪意のあるアプリが見つかりました」の通知を無効化する</string>

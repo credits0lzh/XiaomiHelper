@@ -27,17 +27,20 @@ import android.view.View
 import android.widget.CheckBox
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
+import com.highcapable.kavaref.extension.classOf
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.base.BaseHooker
 import dev.lackluster.mihelper.hook.utils.DexKit
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import dev.lackluster.mihelper.hook.utils.e
-import dev.lackluster.mihelper.hook.utils.ifTrue
 import dev.lackluster.mihelper.hook.utils.toTyped
 import org.luckypray.dexkit.query.enums.StringMatchType
 import java.lang.reflect.Modifier
 
-object RemoveElement : StaticHooker() {
+object RemoveElement : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     private val menuCreateClass1 by lazy {
         DexKit.withBridge {
             findClass {
@@ -54,25 +57,6 @@ object RemoveElement : StaticHooker() {
                 returnType = "boolean"
             }
             searchClasses = menuCreateClass1
-        }
-    }
-    private val menuCreateClass2 by lazy {
-        DexKit.withBridge {
-            findClass {
-                matcher {
-                    addUsingString("R.id.main_content", StringMatchType.Contains)
-                    addUsingString("dark_loading.json", StringMatchType.Equals)
-                }
-            }
-        }
-    }
-    private val onCreateOptionsMenuMethod2 by lazy {
-        DexKit.findMethodWithCache("create_options_menu2") {
-            matcher {
-                name = "onCreateOptionsMenu"
-                returnType = "boolean"
-            }
-            searchClasses = menuCreateClass2
         }
     }
     private val clzPureModeGuide by lazy {
@@ -132,29 +116,21 @@ object RemoveElement : StaticHooker() {
     }
 
     override fun onInit() {
-        Preferences.PackageInstaller.REMOVE_ELEMENT.get().also { 
-            updateSelfState(it)
-        }.ifTrue {
-            onCreateOptionsMenuMethod1
-            onCreateOptionsMenuMethod2
-            clzPureModeGuide
-            showPopupMethod
-            cancelClickMethod
-            miuixDialogClass
-            metShowEnhanceDialog
-        }
+        registerDisposeCleanup(
+            Preferences.PackageInstaller.REMOVE_ELEMENT.observe {
+                updateSelfState(it)
+            }
+        )
+        onCreateOptionsMenuMethod1
+        clzPureModeGuide
+        showPopupMethod
+        cancelClickMethod
+        miuixDialogClass
+        metShowEnhanceDialog
     }
 
-    override fun onHook() {
+    override fun onStart() {
         onCreateOptionsMenuMethod1?.getMethodInstance(classLoader)?.hook {
-            val ori = proceed()
-            val menu = getArg(0) as? Menu
-            if (menu != null) {
-                menu.findItem(ResourcesUtils.feedback)?.isVisible = false
-            }
-            result(ori)
-        }
-        onCreateOptionsMenuMethod2?.getMethodInstance(classLoader)?.hook {
             val ori = proceed()
             val menu = getArg(0) as? Menu
             if (menu != null) {
@@ -184,7 +160,7 @@ object RemoveElement : StaticHooker() {
         clzPureModeGuide?.getInstance(classLoader)?.apply {
             val fldDialog = resolve().firstFieldOrNull {
                 type {
-                    it == miuixDialogClz || it == Dialog::class.java
+                    it == miuixDialogClz || it == classOf<Dialog>()
                 }
             }?.toTyped<Dialog>()
             val fldContext = resolve().firstFieldOrNull {

@@ -256,7 +256,6 @@
     <string name="cleaner_common_skip_splash">停用啟用熒幕</string>
     <string name="cleaner_common_skip_splash_tips">理論上還會停用啟動熒幕上的廣告（無法保證）</string>
     <string name="security_guard_block_upload_app">阻止上傳已安裝應用程式列表</string>
-    <string name="cleaner_package_block_upload_app_info">阻止安裝時上傳應用程式信息</string>
     <string name="cleaner_browser_show_sug_switch">還原搜尋精選設定</string>
     <string name="cleaner_browser_show_sug_switch_tips">顯示搜尋設定中被隱藏的搜尋精選開關，關閉後即可停用搜尋頁面的應用程式、視頻、小説等額外推薦。</string>
     <string name="cleaner_browser_hide_homepage_topbar">隱藏主頁頂欄</string>
@@ -271,8 +270,6 @@
     <string name="cleaner_market_block_update_dailog_tips">封鎖提示您打開更新推送的對話框（會在關閉更新推送並點擊更新按鈕時出現）。</string>
     <string name="cleaner_market_hide_app_security">隱藏應用程式安全檢測</string>
     <string name="cleaner_market_hide_app_security_tips">隱藏“我的”頁的應用程式安全檢測卡片</string>
-    <string name="cleaner_market_bottom_tab_blur">模糊效果</string>
-    <string name="cleaner_market_bottom_tab_blur_tips">強制開啟底部標簽欄的模糊效果</string>
     <string name="cleaner_market_filter_tab">過濾底部標籤頁</string>
     <string name="cleaner_market_filter_tab_tips">隱藏標籤頁（及對應頁面）</string>
     <string name="cleaner_market_ignore_restrict">忽略建議限制</string>
@@ -295,9 +292,8 @@
     <string name="cleaner_music_hide_listen_count">隱藏歌曲的播放次數</string>
     <string name="cleaner_music_hide_listen_count_tips">隱藏播放頁的歌曲播放次數標簽</string>
     <string name="cleaner_package_remove_element">停用多餘的功能並移除相關頁面</string>
-    <string name="cleaner_package_skip_risk_check">停用風險監控</string>
+    <string name="mi_trust_disable_risk_check">停用風險監控</string>
     <string name="cleaner_package_no_network">僞裝成無網狀態</string>
-    <string name="cleaner_package_no_count_check">停用頻繁安裝應用程式檢查</string>
     <string name="cleaner_package_install_source">自訂安裝源</string>
     <string name="cleaner_package_install_source_tips">通過將安裝源僞裝成系統應用程式，繞過系統應用程式安裝限制。</string>
     <string name="cleaner_package_install_source_file">檔案管理</string>

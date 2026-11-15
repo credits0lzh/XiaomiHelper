@@ -25,18 +25,21 @@ package dev.lackluster.mihelper.hook.rules.packageinstaller
 import android.app.Activity
 import android.widget.TextView
 import com.highcapable.kavaref.KavaRef.Companion.resolve
+import com.highcapable.kavaref.extension.classOf
 import dev.lackluster.mihelper.data.Scope
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.base.BaseHooker
 import dev.lackluster.mihelper.hook.utils.DexKit
 import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import dev.lackluster.mihelper.hook.utils.asString
 import dev.lackluster.mihelper.hook.utils.toTyped
 import org.luckypray.dexkit.query.enums.StringMatchType
-import com.highcapable.kavaref.extension.classOf
 
-object CustomInstallSource : StaticHooker() {
+object CustomInstallSource : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     private var hostUid: Int? = null
     private var sourceUid: Int? = null
 
@@ -57,9 +60,9 @@ object CustomInstallSource : StaticHooker() {
         }
     }
     private val metAppInfo by lazy {
-        DexKit.findMethodsWithCache("app_info_holder") {
+        DexKit.findMethodWithCache("app_info_holder") {
             matcher {
-                paramCount = 0
+                paramTypes($$"com.miui.packageInstaller.ui.listcomponets.AppInfoViewObject$ViewHolder")
                 returnType = "void"
             }
             searchClasses = clzAppInfoViewHolder
@@ -75,9 +78,11 @@ object CustomInstallSource : StaticHooker() {
         }
     }
 
-    private val customInstallSource by Preferences.PackageInstaller.CUSTOM_INSTALL_SOURCE.lazyGet()
-    private val sourcePackageName by lazy {
-        when (customInstallSource) {
+    @Volatile
+    private var customInstallSource = 0
+
+    private fun getSourcePackageName(): String {
+        return when (customInstallSource) {
             1 -> "com.android.fileexplorer"
             2 -> "com.xiaomi.market"
             3 -> Preferences.PackageInstaller.INSTALL_SOURCE_PKG.get().takeIf {
@@ -88,14 +93,17 @@ object CustomInstallSource : StaticHooker() {
     }
 
     override fun onInit() {
-        updateSelfState(customInstallSource != 0)
-        if (customInstallSource != 0) {
-            metAppInfo
-            fldViewHolder
-        }
+        registerDisposeCleanup(
+            Preferences.PackageInstaller.CUSTOM_INSTALL_SOURCE.observe {
+                customInstallSource = it
+                updateSelfState(it != 0)
+            }
+        )
+        metAppInfo
+        fldViewHolder
     }
 
-    override fun onHook() {
+    override fun onStart() {
         var appLabel: String? = null
         Activity::class.apply {
             resolve().firstMethodOrNull {
@@ -111,6 +119,7 @@ object CustomInstallSource : StaticHooker() {
                     val realAppLabel = activity.packageManager.let {
                         it.getApplicationInfo(oriPkg, 0).loadLabel(it)
                     }
+                    val sourcePackageName = getSourcePackageName()
                     val fakeAppLabel = activity.packageManager.let {
                         it.getApplicationInfo(sourcePackageName, 0).loadLabel(it)
                     }
@@ -141,9 +150,7 @@ object CustomInstallSource : StaticHooker() {
             name = "getTvInstallSource"
             returnType = TextView::class
         }?.toTyped<TextView>() ?: return
-        metAppInfo.map {
-            it.getMethodInstance(classLoader)
-        }.hookAll {
+        metAppInfo?.getMethodInstance(classLoader)?.hook {
             val ori = proceed()
             val viewHolder = fldVH.get(thisObject)
             metGetTvInstallSource.invoke(viewHolder)?.let {
@@ -176,7 +183,7 @@ object CustomInstallSource : StaticHooker() {
 
     private fun getSourceUid(activity: Activity): Int? {
         if (sourceUid == null) {
-            sourceUid = activity.packageManager.getApplicationInfo(sourcePackageName, 0).uid
+            sourceUid = activity.packageManager.getApplicationInfo(getSourcePackageName(), 0).uid
         }
         return sourceUid
     }
