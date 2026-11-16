@@ -360,8 +360,6 @@
     <string name="cleaner_market_block_update_dailog_tips">Block the dialog that prompts you to turn on update push, when update push is turned off and the update button is clicked.</string>
     <string name="cleaner_market_hide_app_security">Hide app security</string>
     <string name="cleaner_market_hide_app_security_tips">Hide the app security card on my page</string>
-    <string name="cleaner_market_bottom_tab_blur">Blur effect</string>
-    <string name="cleaner_market_bottom_tab_blur_tips">Force enable blur effect on bottom tab bar</string>
     <string name="cleaner_market_disable_customize_icon">Disable marketing app icons</string>
     <string name="cleaner_market_disable_customize_icon_tips">Disable the GetApps\'s ability to replace home screen app icons with marketing icons</string>
     <string name="cleaner_market_filter_tab">Filter bottom tabs</string>
@@ -396,10 +394,8 @@
     <string name="cleaner_music_hide_listen_count_tips">Hide the song play count on the player page</string>
     <string name="ui_title_cleaner_package" translatable="false">@string/scope_package_installer</string>
     <string name="cleaner_package_remove_element">Disable redundant features</string>
-    <string name="cleaner_package_skip_risk_check">Disable the monitoring of risks</string>
+    <string name="mi_trust_disable_risk_check">Disable the monitoring of risks</string>
     <string name="cleaner_package_no_network">Disguise as no network</string>
-    <string name="cleaner_package_no_count_check">Disable frequently installed app check</string>
-    <string name="cleaner_package_block_upload_app_info">Block uploading of information about the app when it\'s installed</string>
     <string name="cleaner_package_install_source">Custom install source</string>
     <string name="cleaner_package_install_source_tips">Ignore the system app installation restrictions by disguising the installation source as a system app.</string>
     <string name="cleaner_package_install_source_disabled" translatable="false">@string/common_disabled</string>
@@ -486,9 +482,10 @@
     <string name="security_lbe_clipboard_toast">Use toast to show clipboard read prompts</string>
     <string name="security_lbe_clipboard_toast_tips">Using toast allows the element behind the prompt to be clickable</string>
     <string name="ui_title_security_mi_trust_service" translatable="false">@string/scope_mi_trust</string>
-    <string name="mi_trust_disable_risk_check" translatable="false">@string/cleaner_package_skip_risk_check</string>
     <string name="security_power_unlock_custom_refresh">Unlock Apps using high refresh rate</string>
-    <string name="security_power_block_battery_whitelist">Prevent recovery of battery optimization whitelist</string>
+    <string name="security_power_block_revert_battery_policy">Prevent battery policy modification by whitelist</string>
+    <string name="security_power_block_battery_whitelist">Disable battery policy whitelist</string>
+    <string name="security_power_block_battery_whitelist_tips">Disables both local and cloud whitelists. This may cause system services to be restricted by the system, resulting in unexpected behavior. Enable with caution.</string>
     <string name="security_power_gms_bg_running">Remove restrictions on GMS background running</string>
     <string name="security_power_gms_bg_running_tips">Disguised as an international version of the system, it allows GMS to run in the background, preventing the FCM connection from being interrupted after locking the screen.</string>
     <!-- OthersPage -->

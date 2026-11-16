@@ -9,18 +9,25 @@ package dev.lackluster.mihelper.hook.rules.browser
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import dev.lackluster.mihelper.hook.utils.toTyped
 
-object SyncUserAgentMetadata : StaticHooker() {
+object SyncUserAgentMetadata : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     private const val MOBILE_METADATA_KEY = "MOBILE"
 
     override fun onInit() {
-        updateSelfState(Preferences.Browser.SYNC_USER_AGENT_METADATA.get())
+        registerDisposeCleanup(
+            Preferences.Browser.SYNC_USER_AGENT_METADATA.observe {
+                updateSelfState(it)
+            }
+        )
     }
 
-    override fun onHook() {
+    override fun onStart() {
         "org.chromium.android_webview.AwSettings".toClassOrNull()?.apply {
             val setUserAgentMetadata = resolve().firstMethodOrNull {
                 name = "setUserAgentMetadataFromMap"

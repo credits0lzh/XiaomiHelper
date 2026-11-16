@@ -20,26 +20,30 @@
 
 package dev.lackluster.mihelper.hook.rules.browser
 
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.base.BaseHooker
 import dev.lackluster.mihelper.hook.utils.DexKit
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object Configuration : StaticHooker() {
-    private val showSugSwitch by Preferences.Browser.SHOW_SUG_SWITCH_ENTRY.lazyGet()
-    private val blockDialog by Preferences.Browser.BLOCK_DIALOG.lazyGet()
-    private val adBlocker by Preferences.Browser.AD_BLOCKER.lazyGet()
+object Configuration : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
+    @Volatile
+    private var showSugSwitch = false
+    @Volatile
+    private var blockDialog = false
+    @Volatile
+    private var adBlocker = false
 
     private val clzConfigCenter by lazy {
         DexKit.withBridge {
-            findClass {
-                matcher {
-                    addUsingString("pref_ad_open_ad_more", StringMatchType.Equals)
-                    addUsingString("ad_app_download_exit_switch", StringMatchType.Equals)
-                }
-            }
-        }
+            getClassData("miui.browser.util.prefs.KvPrefs")
+        }?.let {
+            listOf(it)
+        } ?: emptyList()
     }
     private val metPrefShowSugSwitchView by lazy {
         DexKit.findMethodWithCache("pref_show_sug_switch_view") {
@@ -115,51 +119,107 @@ object Configuration : StaticHooker() {
 
     override fun onInit() {
         updateSelfState(showSugSwitch || blockDialog || adBlocker)
-        if (showSugSwitch) {
-            metPrefShowSugSwitchView
-        }
-        if (blockDialog) {
-            metRecPopupCardSwitch
-            metPrefPushPopDialog
-        }
-        if (adBlocker) {
-            metDefaultPageRealRimeHotSpotSwitch
-            metDefaultPageGuessYouWantSwitch
-            metAdAppDownloadExitSwitch
-            metAdAppDownloadPushSwitch
-            metAdAppDownloadHomeSwitch
-        }
+        registerDisposeCleanup(
+            Preferences.Browser.SHOW_SUG_SWITCH_ENTRY.observe {
+                showSugSwitch = it
+                updateSelfState(showSugSwitch || blockDialog || adBlocker)
+            },
+        )
+        registerDisposeCleanup(
+            Preferences.Browser.BLOCK_DIALOG.observe {
+                blockDialog = it
+                updateSelfState(showSugSwitch || blockDialog || adBlocker)
+            }
+        )
+        registerDisposeCleanup(
+            Preferences.Browser.AD_BLOCKER.observe {
+                adBlocker = it
+                updateSelfState(showSugSwitch || blockDialog || adBlocker)
+            }
+        )
+        // showSugSwitch
+        metPrefShowSugSwitchView
+        // blockDialog
+        metRecPopupCardSwitch
+        metPrefPushPopDialog
+        // adBlocker
+        metDefaultPageRealRimeHotSpotSwitch
+        metDefaultPageGuessYouWantSwitch
+        metAdAppDownloadExitSwitch
+        metAdAppDownloadPushSwitch
+        metAdAppDownloadHomeSwitch
+
     }
 
-    override fun onHook() {
-        if (showSugSwitch) {
-            metPrefShowSugSwitchView?.getMethodInstance(classLoader)?.hook {
+    override fun onStart() {
+        // showSugSwitch
+        metPrefShowSugSwitchView?.getMethodInstance(classLoader)?.hook {
+            if (showSugSwitch) {
                 result(true)
+            } else {
+                result(proceed())
             }
         }
-        if (blockDialog) {
-            metRecPopupCardSwitch?.getMethodInstance(classLoader)?.hook {
+        // blockDialog
+        metRecPopupCardSwitch?.getMethodInstance(classLoader)?.hook {
+            if (blockDialog) {
                 result(false)
+            } else {
+                result(proceed())
             }
-            metPrefPushPopDialog?.getMethodInstance(classLoader)?.hook {
+        }
+        metPrefPushPopDialog?.getMethodInstance(classLoader)?.hook {
+            if (blockDialog) {
                 result(null)
+            } else {
+                result(proceed())
             }
         }
-        if (adBlocker) {
-            metDefaultPageRealRimeHotSpotSwitch?.getMethodInstance(classLoader)?.hook {
+        // adBlocker
+        metDefaultPageRealRimeHotSpotSwitch?.getMethodInstance(classLoader)?.hook {
+            if (adBlocker) {
                 result(false)
+            } else {
+                result(proceed())
             }
-            metDefaultPageGuessYouWantSwitch?.getMethodInstance(classLoader)?.hook {
+        }
+        metDefaultPageGuessYouWantSwitch?.getMethodInstance(classLoader)?.hook {
+            if (adBlocker) {
                 result(false)
+            } else {
+                result(proceed())
             }
-            metAdAppDownloadExitSwitch?.getMethodInstance(classLoader)?.hook {
+        }
+        metAdAppDownloadExitSwitch?.getMethodInstance(classLoader)?.hook {
+            if (adBlocker) {
                 result(false)
+            } else {
+                result(proceed())
             }
-            metAdAppDownloadPushSwitch?.getMethodInstance(classLoader)?.hook {
+        }
+        metAdAppDownloadPushSwitch?.getMethodInstance(classLoader)?.hook {
+            if (adBlocker) {
                 result(false)
+            } else {
+                result(proceed())
             }
-            metAdAppDownloadHomeSwitch?.getMethodInstance(classLoader)?.hook {
+        }
+        metAdAppDownloadHomeSwitch?.getMethodInstance(classLoader)?.hook {
+            if (adBlocker) {
                 result(false)
+            } else {
+                result(proceed())
+            }
+        }
+        "com.android.browser.ad.AdAppDownloadManager".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "check2Show"
+            }?.hook {
+                if (adBlocker) {
+                    result(false)
+                } else {
+                    result(proceed())
+                }
             }
         }
     }

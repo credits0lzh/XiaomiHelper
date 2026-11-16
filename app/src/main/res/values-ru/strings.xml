@@ -80,8 +80,6 @@
     <string name="cleaner_incallui_hide_crbt">Скрыть CRBT (мелодия ожидания с цветовыми эффектами)</string>
     <string name="cleaner_market_block_update_dailog">Диалоговое окно с запросом на обновление блока</string>
     <string name="cleaner_market_block_update_dailog_tips">Заблокируйте диалоговое окно с предложением включить push-уведомления об обновлениях, если push-уведомления об обновлениях отключены и нажата кнопка «Обновление».</string>
-    <string name="cleaner_market_bottom_tab_blur">Эффект размытия</string>
-    <string name="cleaner_market_bottom_tab_blur_tips">Принудительно включить эффект размытия на нижней панели вкладок</string>
     <string name="cleaner_market_disable_customize_icon">Отключить значки маркетинговых приложений</string>
     <string name="cleaner_market_disable_customize_icon_tips">Отключите возможность приложения GetApps заменять значки приложений на главном экране на маркетинговые значки</string>
     <string name="cleaner_market_filter_tab">Фильтр по нижним вкладкам</string>
@@ -107,15 +105,13 @@
     <string name="cleaner_music_hide_listen_count_tips">Скрыть количество прослушиваний песни на странице проигрывателя</string>
     <string name="cleaner_music_hide_my_banner">Скрыть баннер на моей странице</string>
     <string name="cleaner_music_hide_my_rec_playlist">Скрыть рекомендуемые песни на моей странице</string>
-    <string name="cleaner_package_block_upload_app_info">Заблокировать отправку информации о приложении при его установке</string>
     <string name="cleaner_package_custom_install_source">Название пакета источника установки</string>
     <string name="cleaner_package_install_source">Источник для пользовательской установки</string>
     <string name="cleaner_package_install_source_file">Файловый менеджер</string>
     <string name="cleaner_package_install_source_tips">Обходите ограничения на установку системных приложений, маскируя источник установки под системное приложение.</string>
-    <string name="cleaner_package_no_count_check">Отключить проверку часто устанавливаемых приложений</string>
     <string name="cleaner_package_no_network">Имитация отсутствия сети</string>
     <string name="cleaner_package_remove_element">Отключить ненужные функции</string>
-    <string name="cleaner_package_skip_risk_check">Отключить мониторинг рисков</string>
+    <string name="mi_trust_disable_risk_check">Отключить мониторинг рисков</string>
     <string name="clock_easy_fixed_width">Фиксированная ширина TextView</string>
     <string name="clock_easy_fixed_width_tips">Исправлена ширина элемента TextView, чтобы значки уведомлений не меняли своё положение при отображении секунд на часах.</string>
     <string name="clock_easy_show_ampm">Отображение AM/PM</string>
@@ -566,7 +562,6 @@
     <string name="security_lbe_block_remove_auto_start_tips">Предотвращает удаление системой прав на автозапуск приложений</string>
     <string name="security_lbe_clipboard_toast">Используйте всплывающие уведомления для отображения запросов на чтение содержимого буфера обмена</string>
     <string name="security_lbe_clipboard_toast_tips">Использование всплывающего окна позволяет сделать элемент, расположенный за подсказкой, активным</string>
-    <string name="security_power_block_battery_whitelist">Запретить восстановление белого списка оптимизации аккумулятора</string>
     <string name="security_power_gms_bg_running">Снять ограничения на работу GMS в фоновом режиме</string>
     <string name="security_power_gms_bg_running_tips">Под видом международной версии системы она позволяет GMS работать в фоновом режиме, предотвращая обрыв соединения FCM после блокировки экрана.</string>
     <string name="security_power_unlock_custom_refresh">Разблокировка приложений с высокой частотой обновления</string>

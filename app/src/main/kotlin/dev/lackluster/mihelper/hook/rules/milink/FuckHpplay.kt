@@ -24,18 +24,21 @@
 package dev.lackluster.mihelper.hook.rules.milink
 
 import android.content.Context
+import androidx.core.content.edit
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.base.BaseHooker
 import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import androidx.core.content.edit
 
-object FuckHpplay : StaticHooker() {
+object FuckHpplay : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = false
+
     override fun onInit() {
         updateSelfState(Preferences.MiLink.FUCK_HPPLAY.get())
     }
 
-    override fun onHook() {
+    override fun onStart() {
         "com.hpplay.common.utils.ContextPath".toClassOrNull()?.apply {
             resolve().firstMethodOrNull {
                 name = "initDirs"

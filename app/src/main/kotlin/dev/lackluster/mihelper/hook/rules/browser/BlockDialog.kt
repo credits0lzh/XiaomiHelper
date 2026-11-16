@@ -22,15 +22,23 @@ package dev.lackluster.mihelper.hook.rules.browser
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object BlockDialog : StaticHooker() {
+object BlockDialog : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     override fun onInit() {
-        updateSelfState(Preferences.Browser.BLOCK_DIALOG.get())
+        registerDisposeCleanup(
+            Preferences.Browser.BLOCK_DIALOG.observe {
+                updateSelfState(it)
+            }
+        )
     }
 
-    override fun onHook() {
+    override fun onStart() {
         "com.android.browser.Controller".toClassOrNull()?.apply {
             setOf(
                 "showHotListWidgetAddDialog",
@@ -55,9 +63,13 @@ object BlockDialog : StaticHooker() {
             }
         }
         "com.android.browser.operation.floatingdialog.FloatingDialogManager".toClassOrNull()?.apply {
+            val metOnTaskCheckEnd = resolve().firstMethodOrNull {
+                name = "onTaskCheckEnd"
+            }?.toTyped<Unit>()
             resolve().firstMethodOrNull {
                 name = "showFloatingDialog"
             }?.hook {
+                metOnTaskCheckEnd?.invoke(thisObject)
                 result(null)
             }
         }

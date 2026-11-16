@@ -84,6 +84,7 @@ object Preferences {
         val SKIP_SPLASH = PreferenceKey("market_skip_splash", false)
         val BLOCK_UPDATE_DIALOG = PreferenceKey("market_block_up_dialog", false)
         val HIDE_APP_SECURITY = PreferenceKey("market_hide_app_security", false)
+        @Deprecated("")
         val TAB_BLUR = PreferenceKey("market_tab_blur", false)
         val DISABLE_CUSTOMIZE_ICON = PreferenceKey("market_diable_customize_icon", false)
         val ENABLE_FILTER_TAB = PreferenceKey("market_filter_tab", false)
@@ -187,17 +188,18 @@ object Preferences {
 
     object PackageInstaller {
         val REMOVE_ELEMENT = PreferenceKey("package_ad_block", false)
-        val DISABLE_RISK_CHECK = PreferenceKey("package_skip_risk_check", false)
+//        val DISABLE_RISK_CHECK = PreferenceKey("package_skip_risk_check", false)
         val DISGUISE_NO_NETWORK = PreferenceKey("package_no_network", false)
-        val DISABLE_COUNT_CHECK = PreferenceKey("package_count_check", false)
-        val BLOCK_UPLOAD_INFO = PreferenceKey("package_block_upload", false)
+//        val DISABLE_COUNT_CHECK = PreferenceKey("package_count_check", false)
+//        val BLOCK_UPLOAD_INFO = PreferenceKey("package_block_upload", false)
         val CUSTOM_INSTALL_SOURCE = PreferenceKey("package_install_source", 0)
         val INSTALL_SOURCE_PKG = PreferenceKey("package_source_pkg", "")
     }
 
     object PowerKeeper {
         val UNLOCK_CUSTOM_REFRESH = PreferenceKey("power_custom_refresh", false)
-        val BLOCK_BATTERY_WHITELIST = PreferenceKey("power_battery_whitelist", false)
+        val BLOCK_BATTERY_WHITELIST = PreferenceKey("power_block_battery_whitelist", false)
+        val BLOCK_REVERT_BATTERY_POLICY = PreferenceKey("power_battery_whitelist", false)
         val GMS_BG_RUNNING = PreferenceKey("power_gms_bg_running", false)
     }
 

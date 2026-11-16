@@ -279,8 +279,6 @@
     <string name="cleaner_market_block_update_dailog_tips">Chặn hộp thoại nhắc bạn bật thông báo cập nhật khi tính năng này đang tắt và nút cập nhật được nhấn.</string>
     <string name="cleaner_market_hide_app_security">Ẩn phần bảo mật ứng dụng</string>
     <string name="cleaner_market_hide_app_security_tips">Ẩn thẻ bảo mật ứng dụng trên trang cá nhân của tôi</string>
-    <string name="cleaner_market_bottom_tab_blur">Hiệu ứng làm mờ</string>
-    <string name="cleaner_market_bottom_tab_blur_tips">Bắt buộc bật hiệu ứng làm mờ trên thanh tab dưới cùng</string>
     <string name="cleaner_market_disable_customize_icon">Vô hiệu hóa các biểu tượng ứng dụng tiếp thị</string>
     <string name="cleaner_market_disable_customize_icon_tips">Vô hiệu hóa khả năng của GetApps trong việc thay thế các biểu tượng ứng dụng trên màn hình chính bằng các biểu tượng mang tính tiếp thị quảng cáo</string>
     <string name="cleaner_market_filter_tab">Lọc các tab ở dưới cùng</string>
@@ -305,10 +303,8 @@
     <string name="cleaner_music_hide_listen_count">Ẩn số lượt nghe bài hát</string>
     <string name="cleaner_music_hide_listen_count_tips">Ẩn số lượt nghe bài hát trên trang trình phát nhạc</string>
     <string name="cleaner_package_remove_element">Tắt các tính năng dư thừa</string>
-    <string name="cleaner_package_skip_risk_check">Tắt giám sát rủi ro</string>
+    <string name="mi_trust_disable_risk_check">Tắt giám sát rủi ro</string>
     <string name="cleaner_package_no_network">Giả lập không có mạng</string>
-    <string name="cleaner_package_no_count_check">Tắt kiểm tra các ứng dụng được cài đặt thường xuyên</string>
-    <string name="cleaner_package_block_upload_app_info">Chặn tải lên thông tin về ứng dụng khi nó được cài đặt</string>
     <string name="cleaner_package_install_source">Nguồn cài đặt tuỳ chỉnh</string>
     <string name="cleaner_package_install_source_tips">Bỏ qua các hạn chế cài đặt ứng dụng của hệ thống bằng cách nguỵ trang nguồn cài đặt thành một ứng dụng hệ thống.</string>
     <string name="cleaner_package_install_source_file">Trình quản lý tệp</string>
@@ -374,7 +370,6 @@
     <string name="security_lbe_clipboard_toast">Sử dụng Toast để hiển thị lời nhắc khi đọc bảng nhớ tạm</string>
     <string name="security_lbe_clipboard_toast_tips">Sử dụng Toast cho phép bạn nhấp được vào phần tử nằm phía sau thông báo nhắc nhở</string>
     <string name="security_power_unlock_custom_refresh">Mở khóa các ứng dụng sử dụng tốc độ làm mới cao</string>
-    <string name="security_power_block_battery_whitelist">Ngăn khôi phục danh sách trắng tối ưu hóa pin</string>
     <string name="security_power_gms_bg_running">Xóa hạn chế chạy ngầm đối với GMS</string>
     <string name="security_power_gms_bg_running_tips">Nguỵ trang thành phiên bản hệ thống quốc tế, cho phép GMS chạy nền, ngăn kết nối FCM bị ngắt sau khi khoá màn hình.</string>
     <string name="others_aiengine_copy_link_island_browser">Mở URL đã sao chép bằng bất kỳ trình duyệt nào</string>

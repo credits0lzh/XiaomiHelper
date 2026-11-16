@@ -21,13 +21,15 @@
 package dev.lackluster.mihelper.hook.rules.mimirror
 
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.base.BaseHooker
 import dev.lackluster.mihelper.hook.utils.DexKit
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.ifTrue
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object ContinueTasks : StaticHooker() {
+object ContinueTasks : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     private val subScreen by lazy {
         DexKit.findMethodWithCache("pref_all_app_sub_screen") {
             matcher {
@@ -38,14 +40,15 @@ object ContinueTasks : StaticHooker() {
     }
 
     override fun onInit() {
-        Preferences.MiMirror.CONTINUE_ALL_TASKS.get().also {
-            updateSelfState(it)
-        }.ifTrue {
-            subScreen
-        }
+        registerDisposeCleanup(
+            Preferences.MiMirror.CONTINUE_ALL_TASKS.observe {
+                updateSelfState(it)
+            }
+        )
+        subScreen
     }
 
-    override fun onHook() {
+    override fun onStart() {
         subScreen?.getMethodInstance(classLoader)?.hook {
             result(true)
         }

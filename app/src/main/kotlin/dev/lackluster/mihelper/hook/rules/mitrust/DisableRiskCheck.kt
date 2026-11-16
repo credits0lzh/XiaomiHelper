@@ -23,13 +23,15 @@
 package dev.lackluster.mihelper.hook.rules.mitrust
 
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.base.BaseHooker
 import dev.lackluster.mihelper.hook.utils.DexKit
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.ifTrue
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object DisableRiskCheck : StaticHooker() {
+object DisableRiskCheck : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     private val metInitMrmService by lazy {
         DexKit.findMethodWithCache("init_mrm") {
             matcher {
@@ -41,14 +43,15 @@ object DisableRiskCheck : StaticHooker() {
     }
 
     override fun onInit() {
-        Preferences.MiTrust.BLOCK_RISK_CHECK.get().also {
-            updateSelfState(it)
-        }.ifTrue {
-            metInitMrmService
-        }
+        registerDisposeCleanup(
+            Preferences.MiTrust.BLOCK_RISK_CHECK.observe {
+                updateSelfState(it)
+            }
+        )
+        metInitMrmService
     }
 
-    override fun onHook() {
+    override fun onStart() {
         metInitMrmService?.getMethodInstance(classLoader)?.hook {
             result(false)
         }

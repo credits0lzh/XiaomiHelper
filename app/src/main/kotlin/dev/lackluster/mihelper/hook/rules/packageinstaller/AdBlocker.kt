@@ -23,14 +23,17 @@ package dev.lackluster.mihelper.hook.rules.packageinstaller
 import android.annotation.SuppressLint
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.base.BaseHooker
 import dev.lackluster.mihelper.hook.utils.DexKit
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.ifTrue
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import dev.lackluster.mihelper.hook.utils.toTyped
 import org.luckypray.dexkit.query.enums.StringMatchType
+import java.lang.reflect.Modifier
 
-object AdBlocker : StaticHooker() {
+object AdBlocker : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     private val clzCloudParams by "com.miui.packageInstaller.model.CloudParams".lazyClassOrNull()
     private val ctorCloudParams by lazy {
         clzCloudParams?.resolve()?.firstConstructor()
@@ -80,30 +83,102 @@ object AdBlocker : StaticHooker() {
             }
         }
     }
-    private val metStartVirusScan by lazy {
-        DexKit.findMethodWithCache("start_virus_scan") {
+    private val miuiSafeMode by lazy {
+        DexKit.findMethodWithCache("miui_safe_mode") {
             matcher {
-                addUsingString("startVirusScan", StringMatchType.Equals)
-                addUsingString("get_guardprovider_time", StringMatchType.Equals)
+                addUsingString("miui_safe_mode", StringMatchType.Equals)
+                addUsingString("safe_mode_is_open_cloud_config", StringMatchType.Equals)
+                returnType = "boolean"
+            }
+        }
+    }
+    // risk check
+    private val verifyEnable by lazy {
+        DexKit.findMethodWithCache("secure_verify_enable") {
+            matcher {
+                addUsingString("secure_verify_enable", StringMatchType.Equals)
+                returnType = "boolean"
+            }
+        }
+    }
+    private val openSafeMode by lazy {
+        DexKit.findMethodWithCache("open_safety_model") {
+            matcher {
+                addUsingString("installerOpenSafetyModel", StringMatchType.Equals)
+                returnType = "boolean"
+            }
+        }
+    }
+    private val closeSafeMode by lazy {
+        DexKit.findMethodWithCache("close_safety_model") {
+            matcher {
+                addUsingString("installerCloseSafetyModel", StringMatchType.Equals)
+                returnType = "boolean"
+            }
+        }
+    }
+    private val singleAuth by lazy {
+        DexKit.findMethodWithCache("single_auth") {
+            matcher {
+                addUsingString("installerSingleAuth", StringMatchType.Equals)
+                returnType = "boolean"
+            }
+        }
+    }
+    // upload applications
+
+    private val layoutMethod by lazy {
+        DexKit.findMethodsWithCache("layout_method") {
+            matcher {
+                paramCount = 7
+                paramTypes = listOf("java.lang.String", "java.lang.String", "java.lang.String", "java.lang.Integer", "java.lang.String", "java.lang.String", null)
+            }
+        }.filter { !it.isConstructor }
+    }
+    private val reportMethod by lazy {
+        DexKit.findMethodsWithCache("report_method") {
+            matcher {
+                addUsingString("appSourcepackageName", StringMatchType.Equals)
+                addUsingString($$"$apkInfo", StringMatchType.Equals)
+                modifiers = Modifier.STATIC
+            }
+        }
+    }
+    private val metCloudFetchTime by lazy {
+        DexKit.findMethodWithCache("cloud_data_fetch_time") {
+            matcher {
+                addUsingString("cloud_data_fetch_time", StringMatchType.Equals)
+                paramCount = 0
+                returnType = "long"
             }
         }
     }
 
     override fun onInit() {
-        Preferences.PackageInstaller.REMOVE_ELEMENT.get().also { 
-            updateSelfState(it)
-        }.ifTrue {
-            adsEnableMethod
-            appStoreRecommendMethod
-            isPersonalizedAdEnabledMethod
-            virusScanInstallMethod
-            metStartVirusScan
-            cloudParamsMethod
-        }
+        registerDisposeCleanup(
+            Preferences.PackageInstaller.REMOVE_ELEMENT.observe {
+                updateSelfState(it)
+            }
+        )
+        adsEnableMethod
+        appStoreRecommendMethod
+        isPersonalizedAdEnabledMethod
+        virusScanInstallMethod
+        miuiSafeMode
+        cloudParamsMethod
+
+        verifyEnable
+        openSafeMode
+        closeSafeMode
+        singleAuth
+
+        layoutMethod
+        reportMethod
+        metCloudFetchTime
     }
 
     @SuppressLint("DiscouragedApi")
-    override fun onHook() {
+    override fun onStart() {
         adsEnableMethod?.getMethodInstance(classLoader)?.hook {
             result(false)
         }
@@ -116,17 +191,13 @@ object AdBlocker : StaticHooker() {
         virusScanInstallMethod?.getMethodInstance(classLoader)?.hook {
             result(false)
         }
-        metStartVirusScan?.getMethodInstance(classLoader)?.hook {
-            result(null)
+        miuiSafeMode?.getMethodInstance(classLoader)?.hook {
+            result(false)
         }
         cloudParamsMethod?.getMethodInstance(classLoader)?.hook {
             val cloudParams = ctorCloudParams?.copy()?.create()
             val cloudResult = cloudParams?.let { ctorCloudResultSuccess?.newInstance(it) }
-            if (cloudResult != null) {
-                result(cloudResult)
-            } else {
-                result(cloudParams)
-            }
+            result(cloudResult)
         }
         clzCloudParams?.apply {
             val installNotAllow = resolve().firstFieldOrNull {
@@ -178,6 +249,11 @@ object AdBlocker : StaticHooker() {
                 result(false)
             }
             resolve().firstMethodOrNull {
+                name = "isAreaForbidden"
+            }?.hook {
+                result(false)
+            }
+            resolve().firstMethodOrNull {
                 name = "isNewUnregistered"
             }?.hook {
                 result(false)
@@ -187,6 +263,39 @@ object AdBlocker : StaticHooker() {
             }?.hook {
                 result(false)
             }
+        }
+        // count check
+        "com.miui.packageInstaller.model.RiskControlRules".toClassOrNull()?.resolve()?.firstMethodOrNull {
+            name = "getCurrentLevel"
+        }?.hook {
+            result(0)
+        }
+        // risk check
+        verifyEnable?.getMethodInstance(classLoader)?.hook {
+            result(false)
+        }
+        openSafeMode?.getMethodInstance(classLoader)?.hook {
+            result(false)
+        }
+        closeSafeMode?.getMethodInstance(classLoader)?.hook {
+            result(false)
+        }
+        singleAuth?.getMethodInstance(classLoader)?.hook {
+            result(false)
+        }
+        // upload applications
+        layoutMethod.map {
+            it.getMethodInstance(classLoader)
+        }.hookAll {
+            result(null)
+        }
+        reportMethod.map {
+            it.getMethodInstance(classLoader)
+        }.hookAll {
+            result(null)
+        }
+        metCloudFetchTime?.getMethodInstance(classLoader)?.hook {
+            result(Long.MAX_VALUE)
         }
     }
 }

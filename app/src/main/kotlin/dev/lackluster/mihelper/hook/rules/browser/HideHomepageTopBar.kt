@@ -21,84 +21,38 @@
 package dev.lackluster.mihelper.hook.rules.browser
 
 import android.view.View
+import android.widget.RelativeLayout
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.DexKit
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.ifTrue
-import org.luckypray.dexkit.query.enums.StringMatchType
-import java.lang.reflect.Modifier
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object HideHomepageTopBar : StaticHooker() {
-    private val homePageClass by lazy {
-        DexKit.findClassWithCache("simplified_homepage") {
-            matcher {
-                addUsingString("hot_card_tag_click", StringMatchType.Equals)
-            }
-        }
-    }
-    private val topViewField by lazy {
-        DexKit.findFieldWithCache("homepage_top_view") {
-            val classData = homePageClass?.let { clz ->
-                DexKit.withBridge {
-                    getClassData(clz.serialize())
-                }
-            }
-            matcher {
-                classData?.let {
-                    declaredClass(it.name, StringMatchType.Equals)
-                }
-                type = "android.widget.RelativeLayout"
-                modifiers(Modifier.FINAL)
-            }
-            searchClasses = listOfNotNull(classData)
-        }
-    }
-    private val visibilityMethod by lazy {
-        DexKit.findMethodWithCache("homepage_settings_visible") {
-            val classData = homePageClass?.let { clz ->
-                DexKit.withBridge {
-                    getClassData(clz.serialize())
-                }
-            }
-            matcher {
-                classData?.let {
-                    declaredClass(it.name, StringMatchType.Equals)
-                    addCaller(it.methods.single { it1 -> it1.isConstructor }.descriptor)
-                }
-                paramCount = 0
-                returnType = "boolean"
-                modifiers(Modifier.FINAL)
-            }
-            searchClasses = listOfNotNull(classData)
-        }
-    }
+object HideHomepageTopBar : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
 
     override fun onInit() {
-        Preferences.Browser.HIDE_HOMEPAGE_TOP_BAR.get().also {
-            updateSelfState(it)
-        }.ifTrue {
-            homePageClass
-            topViewField
-            visibilityMethod
-        }
+        registerDisposeCleanup(
+            Preferences.Browser.HIDE_HOMEPAGE_TOP_BAR.observe {
+                updateSelfState(it)
+            }
+        )
     }
 
-    override fun onHook() {
-        val topView = topViewField?.getFieldInstance(classLoader)
-        if (topView != null) {
-            homePageClass?.getInstance(classLoader)?.apply {
-                resolve().firstConstructor().hook {
-                    val ori = proceed()
-                    (topView.get(thisObject) as? View)?.visibility = View.INVISIBLE
-                    topView.set(thisObject, null)
-                    result(ori)
+    override fun onStart() {
+        "com.android.browser.homepage.SimpleVersionHomeLayout".toClassOrNull()?.apply {
+            val fldRlSimplePageTopView = resolve().firstFieldOrNull {
+                name = "mRlSimplePageTopView"
+                type(RelativeLayout::class)
+            }?.toTyped<RelativeLayout>()
+            resolve().firstConstructor().hook {
+                val ori = proceed()
+                fldRlSimplePageTopView?.get(thisObject)?.apply {
+                    visibility = View.INVISIBLE
                 }
-            }
-        } else {
-            visibilityMethod?.getMethodInstance(classLoader)?.hook {
-                result(false)
+                fldRlSimplePageTopView?.set(thisObject, null)
+                result(ori)
             }
         }
     }

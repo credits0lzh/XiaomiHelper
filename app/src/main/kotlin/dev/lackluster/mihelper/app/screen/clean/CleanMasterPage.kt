@@ -200,11 +200,6 @@ private fun CleanMasterPageContent(
                 summary = stringResource(R.string.cleaner_market_hide_app_security_tips)
             )
             SwitchPreference(
-                key = Preferences.Market.TAB_BLUR,
-                title = stringResource(R.string.cleaner_market_bottom_tab_blur),
-                summary = stringResource(R.string.cleaner_market_bottom_tab_blur_tips)
-            )
-            SwitchPreference(
                 key = Preferences.Market.DISABLE_CUSTOMIZE_ICON,
                 title = stringResource(R.string.cleaner_market_disable_customize_icon),
                 summary = stringResource(R.string.cleaner_market_disable_customize_icon_tips)
@@ -300,20 +295,8 @@ private fun CleanMasterPageContent(
                 title = stringResource(R.string.cleaner_package_remove_element)
             )
             SwitchPreference(
-                key = Preferences.PackageInstaller.DISABLE_RISK_CHECK,
-                title = stringResource(R.string.cleaner_package_skip_risk_check)
-            )
-            SwitchPreference(
                 key = Preferences.PackageInstaller.DISGUISE_NO_NETWORK,
                 title = stringResource(R.string.cleaner_package_no_network)
-            )
-            SwitchPreference(
-                key = Preferences.PackageInstaller.DISABLE_COUNT_CHECK,
-                title = stringResource(R.string.cleaner_package_no_count_check)
-            )
-            SwitchPreference(
-                key = Preferences.PackageInstaller.BLOCK_UPLOAD_INFO,
-                title = stringResource(R.string.cleaner_package_block_upload_app_info)
             )
             val installSource = rememberPreferenceState(Preferences.PackageInstaller.CUSTOM_INSTALL_SOURCE)
             DropDownPreference(

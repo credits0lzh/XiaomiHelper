@@ -23,15 +23,22 @@ package dev.lackluster.mihelper.hook.rules.market
 import android.view.View
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 
-object HideAppSecurity : StaticHooker() {
+object HideAppSecurity : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     override fun onInit() {
-        updateSelfState(Preferences.Market.HIDE_APP_SECURITY.get())
+        registerDisposeCleanup(
+            Preferences.Market.HIDE_APP_SECURITY.observe {
+                updateSelfState(it)
+            }
+        )
     }
 
-    override fun onHook() {
+    override fun onStart() {
         "com.xiaomi.market.business_ui.main.mine.app_security.MineAppSecurityView".toClassOrNull()?.apply {
             resolve().firstConstructor().hook {
                 val ori = proceed()
@@ -52,13 +59,6 @@ object HideAppSecurity : StaticHooker() {
         "com.xiaomi.market.util.SettingsUtils".toClassOrNull()?.apply {
             resolve().firstMethodOrNull {
                 name = "isSupportAppSecurityCheck"
-            }?.hook {
-                result(false)
-            }
-        }
-        $$"com.xiaomi.market.common.analytics.onetrack.ExperimentManager$Companion".toClassOrNull()?.apply {
-            resolve().optional().firstMethodOrNull {
-                name = "isMineAppSecurityCheckOpen"
             }?.hook {
                 result(false)
             }
